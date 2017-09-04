@@ -507,4 +507,28 @@ cipher_text* multiplication(cipher_text* ct_1, cipher_text* ct_2, parameters* pa
     return ret;
 }
 
+GEN create_message_matrix(int message, int l){
+    GEN m = zeromatcopy(1, l);
+    for(int i = 1; i <= l; i++){
+        for(int j=1; j<=1; j++){
+            gel(gel(m, i), j) = stoi(message);
+        }
+    }
+    return m;
+}
+
+GEN create_message_matrix(int* message, int l){
+    GEN m = zeromatcopy(1, l);
+    for(int i = 1; i <= l; i++){
+        for(int j=1; j<=1; j++){
+            if (i>sizeof(message)/sizeof(*message)){
+                gel(gel(m, i), j) = stoi(0);
+            }
+            else
+                gel(gel(m, i), j) = stoi(message[i-1]);
+        }
+    }
+    return m;
+}
+
 
