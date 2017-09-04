@@ -22,11 +22,11 @@ struct parameters{
 
 struct ProbMatrixPack{
     GEN P;
-    vector<int> startPos;
+    std::vector<int> startPos;
     bool isInitialized = false;
 } *pPackglobal;
 
-struct public_key{
+struct public_key_pack{
     GEN A;
     GEN P;
     int n, s;
@@ -35,6 +35,14 @@ struct public_key{
 struct globalvars{
     ProbMatrixPack* pPack;
     int errorsModulo = 20;
+};
+
+struct cipher_text{
+    GEN comp1, comp2;
+};
+
+struct cipher_text_mult{
+    GEN c;
 };
 
 GEN get_element(GEN x, int index){
@@ -50,7 +58,7 @@ GEN create_GEN(int x){
     return y;
 }
 
-GEN create_GEN(float x){
+GEN create_GEN(char* x){
     GEN y = strtor(x, precision);
     return y;
 }
@@ -90,12 +98,12 @@ GEN Sample(int n, double sigma) {
 GEN getGuassProbability(GEN point, GEN center, parameters* params){
     int sigma = params->sigma;
     GEN twopi = mulir(stoi(2), mppi(precision));
-    GEN s = mulir(sigma, sqrtr(twopi));
+    GEN s = mulir(stoi(sigma), sqrtr(twopi));
     GEN sinv = invr(s);
     if(gcmp(point, strtor("0.00", precision)) == 0)
         return sinv;
     else{
-        return gmul(sinv, gexp( gdiv(gneg(gpow(gdiv(gsub(point, center), sigma), stoi(2), precision)), strtor("2.00", precision)), precision));
+        return gmul(sinv, gexp( gdiv(gneg(gpow(gdiv(gsub(point, center), stoi(sigma)), stoi(2), precision)), strtor("2.00", precision)), precision));
     }
 }
 
@@ -132,7 +140,7 @@ ProbMatrixPack* genProbabilityMatrix(parameters* params, char* c){
         }
     }
     
-    vector<int> beginPos;
+    std::vector<int> beginPos;
     
     for(int x = bounds; x >= 0; x--){
         for(int j=0; j<bitprecision; j++){
@@ -190,7 +198,7 @@ ProbMatrixPack* genProbabilityMatrix(parameters* params, int c){
         }
     }
     
-    vector<int> beginPos;
+    std::vector<int> beginPos;
     
     for(int x = bounds; x >= 0; x--){
         for(int j=0; j<bitprecision; j++){
@@ -228,7 +236,7 @@ int SampleKnuthYao(int c, parameters* params, globalvars* g){
     invsample = bounds+1;
     
     GEN P = g->pPack->P;
-    vector<int> beginPos = g->pPack->startPos;
+    std::vector<int> beginPos = g->pPack->startPos;
     int bitprecision = 64*(precision-2);
     pRows = lg(P)-1;
     pCols = bitprecision;
@@ -266,12 +274,14 @@ int SampleKnuthYao(int c, parameters* params, globalvars* g){
 
 globalvars* initialize_sampler(parameters* params){
     globalvars* g = new globalvars;
-    g->pPack = genProbabilityMatrix(parameters* params, "0.00");
+    g->pPack = genProbabilityMatrix(params, "0.00");
+    return g;
 }
 
 globalvars* initialize_sampler(parameters* params, int center){
     globalvars* g = new globalvars;
-    g->pPack = genProbabilityMatrix(parameters* params, center);
+    g->pPack = genProbabilityMatrix(params, center);
+    return g;
 }
 
 void getGENsize(GEN x){
@@ -297,7 +307,7 @@ GEN generate_secret_key(parameters* params, globalvars* g){
     
     for(int i = 1; i <= l; i++){
         for(int j=1; j<=n; j++){
-            gel(gel(S, i), j) = lift(gmodulo(stoi(SampleKnuthYao(0, params, g)), s));
+            gel(gel(S, i), j) = lift(gmodulo(stoi(SampleKnuthYao(0, params, g)), stoi(s)));
         }
     }
     return S;
@@ -318,13 +328,13 @@ GEN generate_secret_key(parameters* params, int center, globalvars* g){
     
     for(int i = 1; i <= l; i++){
         for(int j=1; j<=n; j++){
-            gel(gel(S, i), j) = lift(gmodulo(stoi(SampleKnuthYao(center, params, g)), s));
+            gel(gel(S, i), j) = lift(gmodulo(stoi(SampleKnuthYao(center, params, g)), stoi(s)));
         }
     }
     return S;
 }
 
-public_key* generate_public_key(GEN sk, parameters* params, globalvars* g){
+public_key_pack* generate_public_key(GEN sk, parameters* params, globalvars* g){
     if(g->pPack->isInitialized == false){
         g = initialize_sampler(params);
     }
@@ -343,7 +353,7 @@ public_key* generate_public_key(GEN sk, parameters* params, globalvars* g){
     
     for(int i = 1; i <= l; i++){
         for(int j=1; j<=n; j++){
-            gel(gel(R, i), j) = lift(gmodulo(stoi(SampleKnuthYao(0, params, g)), s));
+            gel(gel(R, i), j) = lift(gmodulo(stoi(SampleKnuthYao(0, params, g)), stoi(s)));
         }
     }
     A = zeromatcopy(n, n);
@@ -357,7 +367,48 @@ public_key* generate_public_key(GEN sk, parameters* params, globalvars* g){
     temp = RgM_mul(A, S);
     P = gsub(gmul(p, R), temp);
 
-    public_key* pk = new public_key;
+    public_key_pack* pk = new public_key_pack;
+    pk->P = P;
+    pk->A = A;
+    pk->n = n;
+    pk->s = s;
+    return pk;
+}
+
+public_key_pack* generate_public_key(GEN sk, parameters* params, globalvars* g, int center){
+    if(g->pPack->isInitialized == false){
+        g = initialize_sampler(params);
+    }
+    GEN q = params->q;
+    GEN p = params->p;
+    int lambda = params->lambda;
+    int l = params->l;
+    int s = params->s;
+    int n = params->n;
+    int modulo = g->errorsModulo;
+    
+    GEN S = sk;
+    
+    GEN R, A;
+    R = zeromatcopy(n, l);
+    
+    for(int i = 1; i <= l; i++){
+        for(int j=1; j<=n; j++){
+            gel(gel(R, i), j) = lift(gmodulo(stoi(SampleKnuthYao(center, params, g)), stoi(s)));
+        }
+    }
+    A = zeromatcopy(n, n);
+    for(int i = 1; i <= n; i++){
+        for(int j=1; j<=n; j++){
+            gel(gel(A, i), j) = gmodulo(stoi(rand()%modulo), q);
+        }
+    }
+    
+    GEN P, temp;
+    temp = RgM_mul(A, S);
+    P = gsub(gmul(p, R), temp);
+    
+    public_key_pack* pk = new public_key_pack;
     pk->P = P;
     pk->A = A;
     pk->n = n;
@@ -371,6 +422,65 @@ globalvars* set_error_modulo(globalvars* g, int modulo){
     return g;
 }
 
+GEN access_value_pk(public_key_pack* pk, char flag){
+    if(flag == 'a' || flag == 'A'){
+        return pk->A;
+    }
+    else if(flag == 'p' || flag == 'P'){
+        return pk->P;
+    }
+    else if(flag == 'n' || flag == 'N'){
+        return stoi(pk->n);
+    }
+    else if(flag == 's' || flag == 'S'){
+        return stoi(pk->s);
+    }
+    else
+        return stoi(0);
+}
 
+parameters* gen_params(int lambda, int l, int n, int s, int sigma, int degree_p){
+    GEN q = nextprime(gpowgs(stoi(2), lambda));
+    GEN p = gadd(gpowgs(stoi(2), degree_p), stoi(1));
+    parameters* params = new parameters;
+    params->p = p;
+    params->q = q;
+    params->lambda = lambda;
+    params->l = l;
+    params->s = s;
+    params->n = n; // These are changed during rotation
+    params->sigma = sigma;
+    return params;
+}
+
+cipher_text* addition(cipher_text* ct_1, cipher_text* ct_2){
+    GEN ct1, ct2;
+    ct1 = gadd(ct_1->comp1, ct_2->comp1);
+    ct2 = gadd(ct_1->comp2, ct_2->comp2);
+    cipher_text* ct = new cipher_text;
+    ct->comp1 = ct1;
+    ct->comp2 = ct2;
+    return ct;
+}
+
+cipher_text* subtraction(cipher_text* ct_1, cipher_text* ct_2){
+    GEN ct1, ct2;
+    ct1 = gsub(ct_1->comp1, ct_2->comp1);
+    ct2 = gsub(ct_1->comp2, ct_2->comp2);
+    cipher_text* ct = new cipher_text;
+    ct->comp1 = ct1;
+    ct->comp2 = ct2;
+    return ct;
+}
+
+cipher_text* multiplication(cipher_text* ct_1, cipher_text* ct_2){
+    GEN ct1, ct2;
+    ct1 = gsub(ct_1->comp1, ct_2->comp1);
+    ct2 = gsub(ct_1->comp2, ct_2->comp2);
+    cipher_text* ct = new cipher_text;
+    ct->comp1 = ct1;
+    ct->comp2 = ct2;
+    return ct;
+}
 
 
