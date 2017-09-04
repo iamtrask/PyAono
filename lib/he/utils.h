@@ -38,10 +38,12 @@ struct globalvars{
 };
 
 struct cipher_text{
+    int flag = 1;
     GEN comp1, comp2;
 };
 
 struct cipher_text_mult{
+    int flag = 2;
     GEN c;
 };
 
@@ -473,14 +475,36 @@ cipher_text* subtraction(cipher_text* ct_1, cipher_text* ct_2){
     return ct;
 }
 
-cipher_text* multiplication(cipher_text* ct_1, cipher_text* ct_2){
-    GEN ct1, ct2;
-    ct1 = gsub(ct_1->comp1, ct_2->comp1);
-    ct2 = gsub(ct_1->comp2, ct_2->comp2);
-    cipher_text* ct = new cipher_text;
-    ct->comp1 = ct1;
-    ct->comp2 = ct2;
-    return ct;
+cipher_text* multiplication(cipher_text* ct_1, cipher_text* ct_2, parameters* params){
+    GEN q = params->q;
+    GEN p = params->p;
+    int lambda = params->lambda;
+    int l = params->l;
+    int s = params->s;
+    int n = params->n;
+    int nplusl = n+l;
+    GEN cbeforemul = zeromatcopy(1, nplusl);
+    GEN c_1beforemul = zeromatcopy(1, nplusl);
+    for(int i = 1; i <= nplusl; i++){
+        for(int j=1; j<=1; j++){
+            if(i<=n){
+                gel(gel(cbeforemul, i), j) = gel(gel(ct_1->comp1, i), j);
+                gel(gel(c_1beforemul, i), j) = gel(gel(ct_2->comp1, i), j);
+                
+            }
+            else{
+                gel(gel(cbeforemul, i), j) = gel(gel(ct_1->comp2, i-n), j);
+                gel(gel(c_1beforemul, i), j) = gel(gel(ct_2->comp2, i-n), j);
+            }
+        }
+    }
+    
+    GEN cmul = RgM_transmul(cbeforemul, c_1beforemul);
+    cipher_text* ret = new cipher_text;
+    ret->comp1 = cmul;
+    ret->comp2 = stoi(0);
+    ret->flag = 2;
+    return ret;
 }
 
 
