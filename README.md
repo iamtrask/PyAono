@@ -38,11 +38,11 @@ The API can be imported using the command ```import Aono```. It currently suppor
 ### 6. ```create_message_matrix(*x / x, l)```
 ```create_message_matrix(*x / x, l)``` function is used to make a PARI `t_MATRIX` object, which is just a conventional matrix, having a dimension of ```1*l``` (a row matrix) with the elements same as the input vector `x`. If input is just a number, then the first element of the row matrix is set as `x` and rest as `0`.
 #### Arguments: ```input (int* or int)```, ```l (int)```
-#### 7. ```see_ciphertext(c, i)```
+### 7. ```see_ciphertext(c, i)```
 ```see_ciphertext(c, i)``` function is used to access the contents of a ciphertext (type `struct cipher_text`). Since the ciphertext has 2 components, index `i` is used to decide which component to access, with `0` for component 1 and component 2 otherwise.
 #### Arguments: ```c (cipher_text*)```, ```i (int)```
 
-#### 8. ```key_rotate(…)```
+### 8. ```key_rotate(…)```
 This function is yet to be implemented. Coming soon.
 #### Arguments: Not yet decided
 
