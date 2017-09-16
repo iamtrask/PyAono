@@ -3018,8 +3018,9 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
 #define SWIGTYPE_p_public_key_pack swig_types[12]
 #define SWIGTYPE_p_secret_key swig_types[13]
 #define SWIGTYPE_p_std__vectorT_int_t swig_types[14]
-static swig_type_info *swig_types[16];
-static swig_module_info swig_module = {swig_types, 15, 0, 0, 0, 0};
+#define SWIGTYPE_p_timeval swig_types[15]
+static swig_type_info *swig_types[17];
+static swig_module_info swig_module = {swig_types, 16, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -5158,6 +5159,36 @@ SWIGINTERN PyObject *key_gen_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObje
   return SWIG_Py_Void();
 }
 
+SWIGINTERN int Swig_var_tv_set(PyObject *_val) {
+  {
+    void *argp = 0;
+    int res = SWIG_ConvertPtr(_val, &argp, SWIGTYPE_p_timeval,  0  | 0);
+    if (!SWIG_IsOK(res)) {
+      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""tv""' of type '""timeval""'");
+    }
+    if (!argp) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""tv""' of type '""timeval""'");
+    } else {
+      timeval * temp;
+      temp  = reinterpret_cast< timeval * >(argp);
+      tv = *temp;
+      if (SWIG_IsNewObj(res)) delete temp;
+    }
+  }
+  return 0;
+fail:
+  return 1;
+}
+
+
+SWIGINTERN PyObject *Swig_var_tv_get(void) {
+  PyObject *pyobj = 0;
+  
+  pyobj = SWIG_NewPointerObj(SWIG_as_voidptr(&tv), SWIGTYPE_p_timeval,  0 );
+  return pyobj;
+}
+
+
 SWIGINTERN PyObject *_wrap_parameters_q_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   parameters *arg1 = (parameters *) 0 ;
@@ -6802,6 +6833,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_generate_random(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int arg1 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  GEN result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:generate_random",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "generate_random" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = static_cast< int >(val1);
+  result = (GEN)generate_random(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_long, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_getGuassProbability(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   GEN arg1 = (GEN) 0 ;
@@ -7682,6 +7735,37 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_create_message_matrix_repeated_input(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int arg1 ;
+  int arg2 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  GEN result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:create_message_matrix_repeated_input",&obj0,&obj1)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "create_message_matrix_repeated_input" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = static_cast< int >(val1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "create_message_matrix_repeated_input" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  result = (GEN)create_message_matrix_repeated_input(arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_long, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_create_message_matrix__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   int *arg1 = (int *) 0 ;
@@ -7763,6 +7847,37 @@ fail:
     "    create_message_matrix(int,int)\n"
     "    create_message_matrix(int *,int)\n");
   return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_see_ciphertext(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  cipher_text *arg1 = (cipher_text *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  GEN result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:see_ciphertext",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_cipher_text, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "see_ciphertext" "', argument " "1"" of type '" "cipher_text *""'"); 
+  }
+  arg1 = reinterpret_cast< cipher_text * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "see_ciphertext" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  result = (GEN)see_ciphertext(arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_long, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
 }
 
 
@@ -7882,6 +7997,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"Normal", _wrap_Normal, METH_VARARGS, NULL},
 	 { (char *)"Gauss", _wrap_Gauss, METH_VARARGS, NULL},
 	 { (char *)"Sample", _wrap_Sample, METH_VARARGS, NULL},
+	 { (char *)"generate_random", _wrap_generate_random, METH_VARARGS, NULL},
 	 { (char *)"getGuassProbability", _wrap_getGuassProbability, METH_VARARGS, NULL},
 	 { (char *)"genProbabilityMatrix", _wrap_genProbabilityMatrix, METH_VARARGS, NULL},
 	 { (char *)"SampleKnuthYao", _wrap_SampleKnuthYao, METH_VARARGS, NULL},
@@ -7896,7 +8012,9 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"addition", _wrap_addition, METH_VARARGS, NULL},
 	 { (char *)"subtraction", _wrap_subtraction, METH_VARARGS, NULL},
 	 { (char *)"multiplication", _wrap_multiplication, METH_VARARGS, NULL},
+	 { (char *)"create_message_matrix_repeated_input", _wrap_create_message_matrix_repeated_input, METH_VARARGS, NULL},
 	 { (char *)"create_message_matrix", _wrap_create_message_matrix, METH_VARARGS, NULL},
+	 { (char *)"see_ciphertext", _wrap_see_ciphertext, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 
@@ -7918,6 +8036,7 @@ static swig_type_info _swigt__p_public_key = {"_p_public_key", "public_key *", 0
 static swig_type_info _swigt__p_public_key_pack = {"_p_public_key_pack", "public_key_pack *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_secret_key = {"_p_secret_key", "secret_key *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__vectorT_int_t = {"_p_std__vectorT_int_t", "std::vector< int > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_timeval = {"_p_timeval", "timeval *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
   &_swigt__p_ProbMatrixPack,
@@ -7935,6 +8054,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_public_key_pack,
   &_swigt__p_secret_key,
   &_swigt__p_std__vectorT_int_t,
+  &_swigt__p_timeval,
 };
 
 static swig_cast_info _swigc__p_ProbMatrixPack[] = {  {&_swigt__p_ProbMatrixPack, 0, 0, 0},{0, 0, 0, 0}};
@@ -7952,6 +8072,7 @@ static swig_cast_info _swigc__p_public_key[] = {  {&_swigt__p_public_key, 0, 0, 
 static swig_cast_info _swigc__p_public_key_pack[] = {  {&_swigt__p_public_key_pack, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_secret_key[] = {  {&_swigt__p_secret_key, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__vectorT_int_t[] = {  {&_swigt__p_std__vectorT_int_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_timeval[] = {  {&_swigt__p_timeval, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_ProbMatrixPack,
@@ -7969,6 +8090,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_public_key_pack,
   _swigc__p_secret_key,
   _swigc__p_std__vectorT_int_t,
+  _swigc__p_timeval,
 };
 
 
@@ -8662,6 +8784,7 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "M_PI",SWIG_From_double(static_cast< double >(3.14159265358979323846)));
   SWIG_Python_SetConstant(d, "precision",SWIG_From_int(static_cast< int >(6)));
   PyDict_SetItemString(md,(char *)"cvar", SWIG_globals());
+  SWIG_addvarlink(SWIG_globals(),(char *)"tv",Swig_var_tv_get, Swig_var_tv_set);
   SWIG_addvarlink(SWIG_globals(),(char *)"pPackglobal",Swig_var_pPackglobal_get, Swig_var_pPackglobal_set);
 #if PY_VERSION_HEX >= 0x03000000
   return m;

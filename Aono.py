@@ -312,6 +312,7 @@ class parameters(_object):
     __del__ = lambda self: None
 parameters_swigregister = _Aono.parameters_swigregister
 parameters_swigregister(parameters)
+cvar = _Aono.cvar
 
 class ProbMatrixPack(_object):
     __swig_setmethods__ = {}
@@ -376,7 +377,6 @@ class public_key_pack(_object):
     __del__ = lambda self: None
 public_key_pack_swigregister = _Aono.public_key_pack_swigregister
 public_key_pack_swigregister(public_key_pack)
-cvar = _Aono.cvar
 
 class globalvars(_object):
     __swig_setmethods__ = {}
@@ -489,6 +489,10 @@ def Sample(n, sigma):
     return _Aono.Sample(n, sigma)
 Sample = _Aono.Sample
 
+def generate_random(bit_length):
+    return _Aono.generate_random(bit_length)
+generate_random = _Aono.generate_random
+
 def getGuassProbability(point, center, params):
     return _Aono.getGuassProbability(point, center, params)
 getGuassProbability = _Aono.getGuassProbability
@@ -545,9 +549,17 @@ def multiplication(ct_1, ct_2, params):
     return _Aono.multiplication(ct_1, ct_2, params)
 multiplication = _Aono.multiplication
 
+def create_message_matrix_repeated_input(message, l):
+    return _Aono.create_message_matrix_repeated_input(message, l)
+create_message_matrix_repeated_input = _Aono.create_message_matrix_repeated_input
+
 def create_message_matrix(*args):
     return _Aono.create_message_matrix(*args)
 create_message_matrix = _Aono.create_message_matrix
+
+def see_ciphertext(c, index):
+    return _Aono.see_ciphertext(c, index)
+see_ciphertext = _Aono.see_ciphertext
 # This file is compatible with both classic and new-style classes.
 
 
