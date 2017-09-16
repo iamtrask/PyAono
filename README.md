@@ -6,3 +6,17 @@ This scheme was first introduced in the paper - "Fast and Secure Linear Regressi
 This code also has an independent header containing a PARI implementation of the Knuth-Yao's Algorithm for sampling from a discrete Gaussian distribution. The paper followed for understanding and implementing the algorithm - High Precision Discrete Gaussian Sampling on FPGAs (https://www.esat.kuleuven.be/cosic/publications/article-2372.pdf).
 
 NOTE : Running the homomorphic multiplication gives a ![equation](http://latex.codecogs.com/gif.latex?%24l*l%24) matrix as opposed to the message being ![equation](http://latex.codecogs.com/gif.latex?%241*l%24). This is because after homomorphic multiplication, we don't get message but we get ![equation](http://latex.codecogs.com/gif.latex?%24m%5ET*m%24).
+
+### Importing API
+The API can be imported using the command "import Aono". It currently supports the following functions and classes:
+
+--------
+
+## Functions Supported:
+### 1. pari_init(pari_size, max_prime)
+### 2. pari_close()
+### 3. create_GEN(x)
+### 4. get_element(x, i)
+### 5. print_GEN(x)
+
+--------
