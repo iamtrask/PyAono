@@ -9,8 +9,12 @@
 #include <time.h>
 #define PARI_OLD_NAMES
 #include <vector>
+#include <string>
+#include <sys/time.h>
 
 #define precision 6 // This means 256-bit precision
+
+struct timeval tv;
 
 struct parameters{
     GEN q, p;
@@ -95,6 +99,13 @@ GEN Sample(int n, double sigma) {
     }
     
     return ret;
+}
+
+GEN generate_random(int bit_length){
+    gettimeofday(&tv, NULL);
+    setrand(stoi(tv.tv_usec + tv.tv_sec*1000000));
+    GEN r = randomi(gshift(gen_1, bit_length));
+    return r;
 }
 
 GEN getGuassProbability(GEN point, GEN center, parameters* params){
@@ -361,7 +372,7 @@ public_key_pack* generate_public_key(GEN sk, parameters* params, globalvars* g){
     A = zeromatcopy(n, n);
     for(int i = 1; i <= n; i++){
         for(int j=1; j<=n; j++){
-            gel(gel(A, i), j) = gmodulo(stoi(rand()%modulo), q);
+            gel(gel(A, i), j) = gmodulo(generate_random(params->lambda), q);
         }
     }
     
@@ -402,7 +413,7 @@ public_key_pack* generate_public_key(GEN sk, parameters* params, globalvars* g, 
     A = zeromatcopy(n, n);
     for(int i = 1; i <= n; i++){
         for(int j=1; j<=n; j++){
-            gel(gel(A, i), j) = gmodulo(stoi(rand()%modulo), q);
+            gel(gel(A, i), j) = gmodulo(generate_random(params->lambda), q);
         }
     }
     
@@ -509,6 +520,12 @@ cipher_text* multiplication(cipher_text* ct_1, cipher_text* ct_2, parameters* pa
 
 GEN create_message_matrix(int message, int l){
     GEN m = zeromatcopy(1, l);
+    gel(gel(m, 1), 1) = stoi(message);
+    return m;
+}
+
+GEN create_message_matrix_repeated_input(int message, int l){
+    GEN m = zeromatcopy(1, l);
     for(int i = 1; i <= l; i++){
         for(int j=1; j<=1; j++){
             gel(gel(m, i), j) = stoi(message);
@@ -530,5 +547,13 @@ GEN create_message_matrix(int* message, int l){
     }
     return m;
 }
+
+GEN see_ciphertext(cipher_text* c, int index){
+    if(index == 0)
+        return c->comp1;
+    else
+        return c->comp2;
+}
+
 
 
