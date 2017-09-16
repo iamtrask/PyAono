@@ -7,6 +7,12 @@ This code also has an independent header containing a PARI implementation of the
 
 NOTE : Running the homomorphic multiplication gives a ![equation](http://latex.codecogs.com/gif.latex?%24l*l%24) matrix as opposed to the message being ![equation](http://latex.codecogs.com/gif.latex?%241*l%24). This is because after homomorphic multiplication, we don't get message but we get ![equation](http://latex.codecogs.com/gif.latex?%24m%5ET*m%24).
 
+### News
+New here? Check out our <a href="https://www.youtube.com/watch?v=jKKafEBx5P4">sample tutorial</a> on YouTube recorded by <a href="https://github.com/mayank0403">Mayank</a>. The tutorial covers a basic overview of how to use the API. More in-depth tutorials coming soon. Keep checking out YouTube <a href="https://www.youtube.com/channel/UCzoUqDE_OzYo6lGXtsEbOxQ">channel</a> and our GitHub repositories.
+
+### Contribute
+Welcome! If you are intrigued by our work and want to contribute, then please go through the tutorial as mentioned in the `News` section and contact any of the contributors. You should also go through this <a href="https://www.youtube.com/watch?v=sXFmKquiVnk">introductory video</a> of the OpenMined platform.
+
 ### Importing API
 The API can be imported using the command ```import Aono```. It currently supports the following functions and classes:
 
@@ -32,4 +38,7 @@ The API can be imported using the command ```import Aono```. It currently suppor
 ```see_ciphertext(c, i)``` function is used to access the contents of a ciphertext (type `struct cipher_text`). Since the ciphertext has 2 components, index `i` is used to decide which component to access, with `0` for component 1 and component 2 otherwise.
 #### Arguments: ```c (cipher_text*)```, ```i (int)```
 
+#### 8. ```key_rotate(…)```
+This function is yet to be implemented.
+#### Arguments: Not yet decided
 --------
