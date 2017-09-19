@@ -72,13 +72,13 @@ This function is yet to be implemented. Coming soon.
 
 ### ```public_key```
   * Class Data:
-    1. `pk` (`GEN`)
+    1. `pk` (`public_key_pack*`)
     2. `params` (`parameters*`)
     3. `g` (`globalvars*`)
 
   * ```__init__(self, pk = None, params = None, g = None)``` 
     The constructor initiates the class data. 
-    Arguments: `pk` (`GEN`), `params` (`parameters*`), `g` (`globalvars*`)
+    Arguments: `pk` (`public_key_pack*`), `params` (`parameters*`), `g` (`globalvars*`)
 
   * ```encrypt(self, pt)```   
     ```encrypt()``` method returns the ciphertext (`GEN`) which encrypts plaintext `pt`. 
