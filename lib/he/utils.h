@@ -555,5 +555,76 @@ GEN see_ciphertext(cipher_text* c, int index){
         return c->comp2;
 }
 
+GEN power2(GEN x, int n, int kappa, int l, GEN q){
+    GEN power2mat = zeromatcopy(n*kappa, l);
+    long long int nkappa = n*kappa;
+    GEN pow2 = stoi(1);
+    for(int i = 1; i <= l; i++){
+        pow2 = stoi(1);
+        for(int j=1; j <= kappa; j++){
+            for(int k=1; k<=n; k++){
+                gel(gel(power2mat, i), (j-1)*n+k) = gmodulo(gmul(gel(gel(x, i), k), pow2), q);
+            }
+            pow2 = gmul(pow2, stoi(2));
+        }
+    }
+    
+    return power2mat;
+}
+
+GEN appendmat(GEN m1, GEN m2, int col1, int col2, int row){
+    GEN mat = zeromatcopy(row, col1+col2);
+    for(int i =1; i<= col1+col2; i++){
+        for(int j=1; j<=row; j++){
+            if(i<=col1){
+                gel(gel(mat, i), j) = gel(gel(m1, i), j);
+            }
+            else{
+                gel(gel(mat, i), j) = gel(gel(m2, i-col1), j);
+            }
+        }
+    }
+    
+    return mat;
+}
+
+GEN bits(GEN m, int kappa, int n){
+    GEN mat = zeromatcopy(1, n*kappa);
+    long long int nkappa = n*kappa;
+    for(int i =1; i<= n; i++){
+        GEN bintemp = binary_zv(lift(gel(gel(m, i), 1)));
+        bintemp = gtovec(bintemp);
+        GEN binx = cgetg(lg(bintemp), t_VEC);
+        for(int j=1; j<=lg(bintemp)-1; j++){
+            gel(binx, j) = gel(bintemp, lg(bintemp)-j);
+        }
+        int size = lg(binx)-1;
+        for(int j=1; j<=kappa; j++){
+            if(j>size){
+                gel(gel(mat, i+(j-1)*n), 1) = stoi(0);
+            }
+            else{
+                gel(gel(mat, i+(j-1)*n), 1) = gel(binx, j);
+            }
+        }
+    }
+    
+    return mat;
+}
+
+parameters* get_updation_parameters(parameters* params_old, int n, int s){
+    parameters* params = new parameters;
+    params->n = n;
+    params->s = s;
+    params->q = params_old->q;
+    params->p = params_old->p;
+    params->lambda = params_old->lambda;
+    params->l = params_old->l;
+    params->sigma = params_old->sigma;
+    return params;
+
+}
+
+
 
 

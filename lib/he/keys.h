@@ -23,7 +23,7 @@ public:
         GEN m;
         if(ct->flag==1)
             m = lift(gmodulo(lift(gadd(gmul(ct->comp1, sk), ct->comp2)), this->params->p));
-        else{
+        else if(ct->flag==2){
             GEN SIMatrix = zeromatcopy(params->n+params->l, params->l);
             GEN I = matid(params->l);
             for(int i = 1; i <= params->l; i++){
@@ -40,12 +40,29 @@ public:
             
             m = lift(gmodulo(lift(gmul(RgM_transmul(SIMatrix, ct->comp1), SIMatrix)), params->p));
         }
+        else{
+            GEN SIMatrix = zeromatcopy(params->n+params->l, params->l);
+            GEN I = matid(params->l);
+            for(int i = 1; i <= params->l; i++){
+                for(int j=1; j<=params->l+params->n; j++){
+                    if(j<=params->n){
+                        gel(gel(SIMatrix, i), j) = gel(gel(sk, i), j);
+                        
+                    }
+                    else{
+                        gel(gel(SIMatrix, i), j) = gel(gel(I, i), j-params->n);
+                    }
+                }
+            }
+            m = lift(gmodulo(lift(gmul(ct->comp1, SIMatrix)), params->p));
+        }
         return m;
     }
     
     void serialize(){
         return;
     }
+    friend class updation_key_gen;
     
     ~secret_key(){};
 };
@@ -100,6 +117,9 @@ public:
     void serialize(){
         return;
     }
+
+    friend class updation_key_gen;
+    friend class updation_key;
     
     ~public_key(){};
 };
@@ -137,3 +157,4 @@ public:
     }
     
 };
+
