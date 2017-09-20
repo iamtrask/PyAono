@@ -152,6 +152,66 @@ class ciphertext(_object):
 ciphertext_swigregister = _Aono.ciphertext_swigregister
 ciphertext_swigregister(ciphertext)
 
+class updation_key(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, updation_key, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, updation_key, name)
+    __repr__ = _swig_repr
+    __swig_setmethods__["params"] = _Aono.updation_key_params_set
+    __swig_getmethods__["params"] = _Aono.updation_key_params_get
+    if _newclass:
+        params = _swig_property(_Aono.updation_key_params_get, _Aono.updation_key_params_set)
+    __swig_setmethods__["params_old"] = _Aono.updation_key_params_old_set
+    __swig_getmethods__["params_old"] = _Aono.updation_key_params_old_get
+    if _newclass:
+        params_old = _swig_property(_Aono.updation_key_params_old_get, _Aono.updation_key_params_old_set)
+    __swig_setmethods__["g"] = _Aono.updation_key_g_set
+    __swig_getmethods__["g"] = _Aono.updation_key_g_get
+    if _newclass:
+        g = _swig_property(_Aono.updation_key_g_get, _Aono.updation_key_g_set)
+
+    def __init__(self, *args):
+        this = _Aono.new_updation_key(*args)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+
+    def initialize(self, X, Y, params, params_old, g, pk):
+        return _Aono.updation_key_initialize(self, X, Y, params, params_old, g, pk)
+
+    def cipher_switch(self, ct):
+        return _Aono.updation_key_cipher_switch(self, ct)
+
+    def serialize(self):
+        return _Aono.updation_key_serialize(self)
+    __swig_destroy__ = _Aono.delete_updation_key
+    __del__ = lambda self: None
+updation_key_swigregister = _Aono.updation_key_swigregister
+updation_key_swigregister(updation_key)
+
+class updation_key_gen(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, updation_key_gen, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, updation_key_gen, name)
+    __repr__ = _swig_repr
+
+    def __init__(self):
+        this = _Aono.new_updation_key_gen()
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+
+    def generate_key(self, key1, key2):
+        return _Aono.updation_key_gen_generate_key(self, key1, key2)
+    __swig_destroy__ = _Aono.delete_updation_key_gen
+    __del__ = lambda self: None
+updation_key_gen_swigregister = _Aono.updation_key_gen_swigregister
+updation_key_gen_swigregister(updation_key_gen)
+
 class secret_key(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, secret_key, name, value)
@@ -312,6 +372,7 @@ class parameters(_object):
     __del__ = lambda self: None
 parameters_swigregister = _Aono.parameters_swigregister
 parameters_swigregister(parameters)
+cvar = _Aono.cvar
 
 class ProbMatrixPack(_object):
     __swig_setmethods__ = {}
@@ -376,7 +437,6 @@ class public_key_pack(_object):
     __del__ = lambda self: None
 public_key_pack_swigregister = _Aono.public_key_pack_swigregister
 public_key_pack_swigregister(public_key_pack)
-cvar = _Aono.cvar
 
 class globalvars(_object):
     __swig_setmethods__ = {}
@@ -489,6 +549,10 @@ def Sample(n, sigma):
     return _Aono.Sample(n, sigma)
 Sample = _Aono.Sample
 
+def generate_random(bit_length):
+    return _Aono.generate_random(bit_length)
+generate_random = _Aono.generate_random
+
 def getGuassProbability(point, center, params):
     return _Aono.getGuassProbability(point, center, params)
 getGuassProbability = _Aono.getGuassProbability
@@ -545,9 +609,33 @@ def multiplication(ct_1, ct_2, params):
     return _Aono.multiplication(ct_1, ct_2, params)
 multiplication = _Aono.multiplication
 
+def create_message_matrix_repeated_input(message, l):
+    return _Aono.create_message_matrix_repeated_input(message, l)
+create_message_matrix_repeated_input = _Aono.create_message_matrix_repeated_input
+
 def create_message_matrix(*args):
     return _Aono.create_message_matrix(*args)
 create_message_matrix = _Aono.create_message_matrix
+
+def see_ciphertext(c, index):
+    return _Aono.see_ciphertext(c, index)
+see_ciphertext = _Aono.see_ciphertext
+
+def power2(x, n, kappa, l, q):
+    return _Aono.power2(x, n, kappa, l, q)
+power2 = _Aono.power2
+
+def appendmat(m1, m2, col1, col2, row):
+    return _Aono.appendmat(m1, m2, col1, col2, row)
+appendmat = _Aono.appendmat
+
+def bits(m, kappa, n):
+    return _Aono.bits(m, kappa, n)
+bits = _Aono.bits
+
+def get_updation_parameters(params_old, n, s):
+    return _Aono.get_updation_parameters(params_old, n, s)
+get_updation_parameters = _Aono.get_updation_parameters
 # This file is compatible with both classic and new-style classes.
 
 
