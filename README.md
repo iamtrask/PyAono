@@ -144,5 +144,5 @@ Arguments: `sk` (`secret_key*`)
 ### ```key_pair```
  * Struct Data:
    1. `pk`(`public_key`)
-   2. `sk`(`private_key`)
+   2. `sk`(`secret_key`)
    
