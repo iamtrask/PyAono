@@ -15,7 +15,7 @@ We just rolled out the support for key switching/rotation. Check it out by runni
 New here? Check out our <a href="https://www.youtube.com/watch?v=jKKafEBx5P4">sample tutorial</a> on YouTube recorded by <a href="https://github.com/mayank0403">Mayank</a>. The tutorial covers a basic overview of how to use the API. More in-depth tutorials coming soon. Keep checking out YouTube <a href="https://www.youtube.com/channel/UCzoUqDE_OzYo6lGXtsEbOxQ">channel</a> and our GitHub repositories.
 
 ### Contribute
-Welcome! If you are intrigued by our work and want to contribute, then please go through the tutorial as mentioned in the `News` section and contact any of the contributors. You should also go through this <a href="https://www.youtube.com/watch?v=sXFmKquiVnk">introductory video</a> of the OpenMined platform.
+Welcome! If you are intrigued by our work and want to contribute, then please go through the tutorial as mentioned in the `News` section and contact any of the contributors. You should also go through this <a href="https://www.youtube.com/watch?v=sXFmKquiVnk">introductory video</a> by Andrew Trask, of the OpenMined platform.
 
 --------
 
@@ -43,10 +43,6 @@ The API can be imported using the command ```import Aono```. It currently suppor
 ### 7. ```see_ciphertext(c, i)```
 ```see_ciphertext(c, i)``` function is used to access the contents of a ciphertext (type `struct cipher_text`). Since the ciphertext has 2 components, index `i` is used to decide which component to access, with `0` for component 1 and component 2 otherwise.
 #### Arguments: ```c (cipher_text*)```, ```i (int)```
-
-### 8. ```key_rotate(…)```
-This function is yet to be implemented. Coming soon.
-#### Arguments: Not yet decided
 
 --------
 
@@ -117,5 +113,22 @@ TODO - Remove `params`, it can be taken from `pk`.
     ```decrypt()``` method returns the decrypted `ciphertext` which is `GEN` variable. 
 Arguments: `sk` (`secret_key*`)
 
+### ```updation_key```
+* Class Data:
+    1. `pk` (`public_key_pack*`)
+    2. `params` (`parameters*`)
+    3. `old_params` (`parameters*`)
+    4. `g` (`globalvars*`)
+    5. `XComponent` (`GEN`)
+    6. `YComponent` (`GEN`)
 
+  * ```__init__(self, X, Y, params, params_old, g, pk)``` 
+    The constructor initiates the class data. 
+    Arguments: `pk` (`public_key_pack*`), `params` (`parameters*`), `g` (`globalvars*`)
+
+  * ```cipher_switch(self, ciphertext)```   
+    ```cipher_switch()``` method returns the ciphertext (`ciphertext`) which is obtained by switching the ciphertext passed to function with the updatation key.
+    Arguments: `ct` (`ciphertext`)
+    
+    
 
