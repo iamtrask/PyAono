@@ -133,7 +133,7 @@ Arguments: `sk` (`secret_key*`)
 ### ```updation_key_gen```
 
   * ```generate_key(self, key_pair*, key_pair*)```   
-    ```generate_key()``` method returns the updation key (`updation_key`) which is the key that can be used to switch any ciphertext which is associated with the first (in order of arguments) `key_pair` (defined in the next section on structs) to the ciphertext which is associated with the second `key_pair`.
+    ```generate_key()``` method returns the updation key (`updation_key`) which is the key that can be used to switch any ciphertext which is associated with the first (in order of arguments) `key_pair` (defined in the next section on `structs`) to the ciphertext which is associated with the second `key_pair`.
     Arguments: `key1` (`key_pair`), `key2` (`key_pair`)
     
     
