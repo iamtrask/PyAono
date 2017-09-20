@@ -130,5 +130,19 @@ Arguments: `sk` (`secret_key*`)
     ```cipher_switch()``` method returns the ciphertext (`ciphertext`) which is obtained by switching the ciphertext passed to function with the updatation key.
     Arguments: `ct` (`ciphertext`)
     
-    
+### ```updation_key_gen```
 
+  * ```generate_key(self, key_pair*, key_pair*)```   
+    ```generate_key()``` method returns the updation key (`updation_key`) which is the key that can be used to switch any ciphertext which is associated with the first (in order of arguments) `key_pair` (defined in the next section on structs) to the ciphertext which is associated with the second `key_pair`.
+    Arguments: `key1` (`key_pair`), `key2` (`key_pair`)
+    
+    
+--------
+
+## Structs:
+
+### ```key_pair```
+ * Struct Data:
+   1. `pk`(`public_key`)
+   2. `sk`(`private_key`)
+   
