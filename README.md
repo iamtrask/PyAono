@@ -152,3 +152,5 @@ Arguments: `sk` (`secret_key*`)
    1. `pk`(`public_key`)
    2. `sk`(`secret_key`)
    
+## TODO:
+Tweak to homomorphic functions to support rotated or updated ciphertexts.
