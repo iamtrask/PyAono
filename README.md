@@ -9,7 +9,7 @@ NOTE : Running the homomorphic multiplication gives a ![equation](http://latex.c
 
 --------
 ### What's new in the latest version?
-We just rolled out the support for key switching/rotation. Check it out by running `init_key_switching.py`. You can also run `init.py` to check out homomorphic operations working.
+We just rolled out the support for key switching/rotation. Check it out by running `init_key_switching.py`. You can also run `init.py` to check out homomorphic operations working.<br />
 This scheme has an `advantage` over other schemes that the key switching can both, increase as well as decrease the security level of the ciphertext! 
 
 ### News
@@ -17,6 +17,11 @@ New here? Check out our <a href="https://www.youtube.com/watch?v=jKKafEBx5P4">sa
 
 ### Contribute
 Welcome! If you are intrigued by our work and want to contribute, then please go through the tutorial as mentioned in the `News` section and contact any of the contributors. You should also go through this <a href="https://www.youtube.com/watch?v=sXFmKquiVnk">introductory video</a> by Andrew Trask, of the OpenMined platform.
+
+### Difference between Key Rotation and Security Update
+`Key Rotation` means that we change ciphertext associated with the key-pair `(pk1, sk1)`, where `pk1` is used to encrypt the message and `sk1` is used to decrypt to message to another ciphertext associated with keypair `(pk2, sk2)`, without decrypting the first ciphertext.<br />
+We specifically call it `Key Rotation` when the parameters have this relation ```n1 = n2```.<br />
+We call it `Security Update` if the paramters have this relation ```n1 < n2```, meaning that the security of new ciphertext has been updated and increased.
 
 --------
 
