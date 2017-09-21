@@ -10,6 +10,7 @@ NOTE : Running the homomorphic multiplication gives a ![equation](http://latex.c
 --------
 ### What's new in the latest version?
 We just rolled out the support for key switching/rotation. Check it out by running `init_key_switching.py`. You can also run `init.py` to check out homomorphic operations working.
+This scheme has an `advantage` over other schemes that the key switching can both, increase as well as decrease the security level of the ciphertext! 
 
 ### News
 New here? Check out our <a href="https://www.youtube.com/watch?v=jKKafEBx5P4">sample tutorial</a> on YouTube recorded by <a href="https://github.com/mayank0403">Mayank</a>. The tutorial covers a basic overview of how to use the API. More in-depth tutorials coming soon. Keep checking out YouTube <a href="https://www.youtube.com/channel/UCzoUqDE_OzYo6lGXtsEbOxQ">channel</a> and our GitHub repositories.
