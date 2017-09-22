@@ -170,5 +170,5 @@ Arguments: `sk` (`secret_key*`)
    2. `sk`(`secret_key`)
    
 ## TODO:
-Tweak to homomorphic functions to support rotated or updated ciphertexts. <br/>
-Taking care of negative errors by mapping ciphertext to a symmteric group before decryption
+- [x] Tweaks to homomorphic functions to support rotated or updated ciphertexts. <br/>
+- [ ] Taking care of negative errors by mapping ciphertext to a symmteric group before decryption. <br />
