@@ -62,7 +62,7 @@ public:
     
     ciphertext operator-(ciphertext &ct){
         ciphertext result;
-        result.value = subtraction(this->value, ct.value);
+        result.value = subtraction(this->value, ct.value, params, pk->pk, pk->g);
         result.params = params;
         result.pk = this->pk;
         return result;

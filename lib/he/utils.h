@@ -634,15 +634,146 @@ cipher_text* addition(cipher_text* ct_1, cipher_text* ct_2, parameters* params, 
     }
 }
 
-cipher_text* subtraction(cipher_text* ct_1, cipher_text* ct_2){
-    GEN ct1, ct2;
-    ct1 = gsub(ct_1->comp1, ct_2->comp1);
-    ct2 = gsub(ct_1->comp2, ct_2->comp2);
-    cipher_text* ct = new cipher_text;
-    ct->comp1 = ct1;
-    ct->comp2 = ct2;
-    return ct;
+cipher_text* subtraction(cipher_text* ct_1, cipher_text* ct_2, parameters* params, public_key_pack* pk, globalvars* g){
+    if (ct_1->flag == 1 && ct_2->flag == 2){
+        GEN messagemat = create_message_matrix_repeated_input(1, params->l);
+        cipher_text* one_enc = encrypt_outside_class(messagemat, pk, params, g);
+        
+        cipher_text* newct = multiplication(one_enc, ct_1, params);
+        GEN ct1, ct2;
+        ct1 = gsub(newct->comp1, ct_2->comp1);
+        cipher_text* ct = new cipher_text;
+        ct->comp1 = ct1;
+        ct->comp2 = stoi(0);
+        ct->flag = 2;
+        return ct;
+    }
+    else if (ct_1->flag == 2 && ct_2->flag == 1){
+        GEN messagemat = create_message_matrix_repeated_input(1, params->l);
+        cipher_text* one_enc = encrypt_outside_class(messagemat, pk, params, g);
+        
+        cipher_text* newct = multiplication(one_enc, ct_2, params);
+        GEN ct1, ct2;
+        ct1 = gsub(ct_1->comp1, newct->comp1);
+        cipher_text* ct = new cipher_text;
+        ct->comp1 = ct1;
+        ct->comp2 = stoi(0);
+        ct->flag = 2;
+        return ct;
+    }
+    else if (ct_1->flag == 3 && ct_2->flag == 2){
+        GEN messagemat = create_message_matrix_repeated_input(1, params->l);
+        cipher_text* one_enc = encrypt_outside_class(messagemat, pk, params, g);
+        
+        cipher_text* newct = multiplication(one_enc, ct_1, params);
+        GEN ct1, ct2;
+        ct1 = gsub(newct->comp1, ct_2->comp1);
+        cipher_text* ct = new cipher_text;
+        ct->comp1 = ct1;
+        ct->comp2 = stoi(0);
+        ct->flag = 2;
+        return ct;
+    }
+    else if (ct_1->flag == 2 && ct_2->flag == 3){
+        GEN messagemat = create_message_matrix_repeated_input(1, params->l);
+        cipher_text* one_enc = encrypt_outside_class(messagemat, pk, params, g);
+        
+        cipher_text* newct = multiplication(one_enc, ct_2, params);
+        GEN ct1, ct2;
+        ct1 = gsub(ct_1->comp1, newct->comp1);
+        cipher_text* ct = new cipher_text;
+        ct->comp1 = ct1;
+        ct->comp2 = stoi(0);
+        ct->flag = 2;
+        return ct;
+    }
+    else if (ct_1->flag == 2 && ct_2->flag == 2){
+        GEN ct1, ct2;
+        ct1 = gsub(ct_1->comp1, ct_2->comp1);
+        cipher_text* ct = new cipher_text;
+        ct->comp1 = ct1;
+        ct->comp2 = stoi(0);
+        ct->flag = 2;
+        return ct;
+    }
+    else if (ct_1->flag == 3 && ct_2->flag == 3){
+        GEN ct1, ct2;
+        ct1 = gsub(ct_1->comp1, ct_2->comp1);
+        cipher_text* ct = new cipher_text;
+        ct->comp1 = ct1;
+        ct->comp2 = stoi(0);
+        ct->flag = 3;
+        return ct;
+    }
+    else if (ct_1->flag == 3 && ct_2->flag == 1){
+        GEN q = params->q;
+        GEN p = params->p;
+        int lambda = params->lambda;
+        int l = params->l;
+        int s = params->s;
+        int n = params->n;
+        int nplusl = n+l;
+        GEN c2changed = zeromatcopy(1, nplusl);
+        for(int i = 1; i <= nplusl; i++){
+            for(int j=1; j<=1; j++){
+                if(i<=n){
+                    gel(gel(c2changed, i), j) = gel(gel(ct_2->comp1, i), j);
+                    
+                }
+                else{
+                    gel(gel(c2changed, i), j) = gel(gel(ct_2->comp2, i-n), j);
+                }
+            }
+        }
+        
+        GEN ct1, ct2;
+        ct1 = gsub(ct_1->comp1, c2changed);
+        cipher_text* ct = new cipher_text;
+        ct->comp1 = ct1;
+        ct->comp2 = stoi(0);
+        ct->flag = 3;
+        return ct;
+    }
+    else if (ct_1->flag == 1 && ct_2->flag == 3){
+        GEN q = params->q;
+        GEN p = params->p;
+        int lambda = params->lambda;
+        int l = params->l;
+        int s = params->s;
+        int n = params->n;
+        int nplusl = n+l;
+        GEN c1changed = zeromatcopy(1, nplusl);
+        for(int i = 1; i <= nplusl; i++){
+            for(int j=1; j<=1; j++){
+                if(i<=n){
+                    gel(gel(c1changed, i), j) = gel(gel(ct_1->comp1, i), j);
+                    
+                }
+                else{
+                    gel(gel(c1changed, i), j) = gel(gel(ct_1->comp2, i-n), j);
+                }
+            }
+        }
+        
+        GEN ct1, ct2;
+        ct1 = gsub(c1changed, ct_2->comp1);
+        cipher_text* ct = new cipher_text;
+        ct->comp1 = ct1;
+        ct->comp2 = stoi(0);
+        ct->flag = 3;
+        return ct;
+    }
+    else{
+        GEN ct1, ct2;
+        ct1 = gsub(ct_1->comp1, ct_2->comp1);
+        ct2 = gsub(ct_1->comp2, ct_2->comp2);
+        cipher_text* ct = new cipher_text;
+        ct->comp1 = ct1;
+        ct->comp2 = ct2;
+        return ct;
+    }
 }
+
 
 cipher_text* multiplication(cipher_text* ct_1, cipher_text* ct_2, parameters* params){
     GEN q = params->q;
