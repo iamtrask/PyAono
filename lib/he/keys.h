@@ -120,6 +120,7 @@ public:
 
     friend class updation_key_gen;
     friend class updation_key;
+    friend class ciphertext;
     
     ~public_key(){};
 };
