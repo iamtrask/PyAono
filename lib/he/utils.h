@@ -466,14 +466,92 @@ parameters* gen_params(int lambda, int l, int n, int s, int sigma, int degree_p)
     return params;
 }
 
-cipher_text* addition(cipher_text* ct_1, cipher_text* ct_2){
-    GEN ct1, ct2;
-    ct1 = gadd(ct_1->comp1, ct_2->comp1);
-    ct2 = gadd(ct_1->comp2, ct_2->comp2);
-    cipher_text* ct = new cipher_text;
-    ct->comp1 = ct1;
-    ct->comp2 = ct2;
-    return ct;
+cipher_text* addition(cipher_text* ct_1, cipher_text* ct_2, parameters* params){
+    if (ct_1->flag == 2 && ct_2->flag == 2){
+        GEN ct1, ct2;
+        ct1 = gadd(ct_1->comp1, ct_2->comp1);
+        cipher_text* ct = new cipher_text;
+        ct->comp1 = ct1;
+        ct->comp2 = stoi(0);
+        ct->flag = 2;
+        return ct;
+    }
+    else if (ct_1->flag == 3 && ct_2->flag == 3){
+        GEN ct1, ct2;
+        ct1 = gadd(ct_1->comp1, ct_2->comp1);
+        cipher_text* ct = new cipher_text;
+        ct->comp1 = ct1;
+        ct->comp2 = stoi(0);
+        ct->flag = 3;
+        return ct;
+    }
+    else if (ct_1->flag == 3 && ct_2->flag == 1){
+        GEN q = params->q;
+        GEN p = params->p;
+        int lambda = params->lambda;
+        int l = params->l;
+        int s = params->s;
+        int n = params->n;
+        int nplusl = n+l;
+        GEN c2changed = zeromatcopy(1, nplusl);
+        for(int i = 1; i <= nplusl; i++){
+            for(int j=1; j<=1; j++){
+                if(i<=n){
+                    gel(gel(c2changed, i), j) = gel(gel(ct_2->comp1, i), j);
+                    
+                }
+                else{
+                    gel(gel(c2changed, i), j) = gel(gel(ct_2->comp2, i-n), j);
+                }
+            }
+        }
+        
+        GEN ct1, ct2;
+        ct1 = gadd(ct_1->comp1, c2changed);
+        cipher_text* ct = new cipher_text;
+        ct->comp1 = ct1;
+        ct->comp2 = stoi(0);
+        ct->flag = 3;
+        return ct;
+    }
+    else if (ct_1->flag == 1 && ct_2->flag == 3){
+        GEN q = params->q;
+        GEN p = params->p;
+        int lambda = params->lambda;
+        int l = params->l;
+        int s = params->s;
+        int n = params->n;
+        int nplusl = n+l;
+        GEN c1changed = zeromatcopy(1, nplusl);
+        for(int i = 1; i <= nplusl; i++){
+            for(int j=1; j<=1; j++){
+                if(i<=n){
+                    gel(gel(c1changed, i), j) = gel(gel(ct_1->comp1, i), j);
+                    
+                }
+                else{
+                    gel(gel(c1changed, i), j) = gel(gel(ct_1->comp2, i-n), j);
+                }
+            }
+        }
+        
+        GEN ct1, ct2;
+        ct1 = gadd(ct_2->comp1, c1changed);
+        cipher_text* ct = new cipher_text;
+        ct->comp1 = ct1;
+        ct->comp2 = stoi(0);
+        ct->flag = 3;
+        return ct;
+    }
+    else{
+        GEN ct1, ct2;
+        ct1 = gadd(ct_1->comp1, ct_2->comp1);
+        ct2 = gadd(ct_1->comp2, ct_2->comp2);
+        cipher_text* ct = new cipher_text;
+        ct->comp1 = ct1;
+        ct->comp2 = ct2;
+        return ct;
+    }
 }
 
 cipher_text* subtraction(cipher_text* ct_1, cipher_text* ct_2){
@@ -494,28 +572,87 @@ cipher_text* multiplication(cipher_text* ct_1, cipher_text* ct_2, parameters* pa
     int s = params->s;
     int n = params->n;
     int nplusl = n+l;
-    GEN cbeforemul = zeromatcopy(1, nplusl);
-    GEN c_1beforemul = zeromatcopy(1, nplusl);
-    for(int i = 1; i <= nplusl; i++){
-        for(int j=1; j<=1; j++){
-            if(i<=n){
-                gel(gel(cbeforemul, i), j) = gel(gel(ct_1->comp1, i), j);
-                gel(gel(c_1beforemul, i), j) = gel(gel(ct_2->comp1, i), j);
-                
-            }
-            else{
-                gel(gel(cbeforemul, i), j) = gel(gel(ct_1->comp2, i-n), j);
-                gel(gel(c_1beforemul, i), j) = gel(gel(ct_2->comp2, i-n), j);
+    
+    if (ct_1->flag == 3 && ct_2->flag == 3){
+        GEN cbeforemul = ct_1->comp1;
+        GEN c_1beforemul = ct_2->comp1;
+        
+        GEN cmul = RgM_transmul(cbeforemul, c_1beforemul);
+        cipher_text* ret = new cipher_text;
+        ret->comp1 = cmul;
+        ret->comp2 = stoi(0);
+        ret->flag = 2;
+        return ret;
+    }
+    else if (ct_1->flag == 3 && ct_2->flag == 1){
+        GEN cbeforemul = ct_1->comp1;
+        GEN c_1beforemul = zeromatcopy(1, nplusl);
+        for(int i = 1; i <= nplusl; i++){
+            for(int j=1; j<=1; j++){
+                if(i<=n){
+                    gel(gel(c_1beforemul, i), j) = gel(gel(ct_2->comp1, i), j);
+                    
+                }
+                else{
+                    gel(gel(c_1beforemul, i), j) = gel(gel(ct_2->comp2, i-n), j);
+                }
             }
         }
+        
+        GEN cmul = RgM_transmul(cbeforemul, c_1beforemul);
+        cipher_text* ret = new cipher_text;
+        ret->comp1 = cmul;
+        ret->comp2 = stoi(0);
+        ret->flag = 2;
+        return ret;
     }
-    
-    GEN cmul = RgM_transmul(cbeforemul, c_1beforemul);
-    cipher_text* ret = new cipher_text;
-    ret->comp1 = cmul;
-    ret->comp2 = stoi(0);
-    ret->flag = 2;
-    return ret;
+    else if (ct_1->flag == 1 && ct_2->flag == 3){
+        GEN cbeforemul = zeromatcopy(1, nplusl);
+        GEN c_1beforemul = ct_2->comp1;
+        for(int i = 1; i <= nplusl; i++){
+            for(int j=1; j<=1; j++){
+                if(i<=n){
+                    gel(gel(cbeforemul, i), j) = gel(gel(ct_1->comp1, i), j);
+                    
+                }
+                else{
+                    gel(gel(cbeforemul, i), j) = gel(gel(ct_1->comp2, i-n), j);
+                    
+                }
+            }
+        }
+        
+        GEN cmul = RgM_transmul(cbeforemul, c_1beforemul);
+        cipher_text* ret = new cipher_text;
+        ret->comp1 = cmul;
+        ret->comp2 = stoi(0);
+        ret->flag = 2;
+        return ret;
+    }
+    else{
+        GEN cbeforemul = zeromatcopy(1, nplusl);
+        GEN c_1beforemul = zeromatcopy(1, nplusl);
+        for(int i = 1; i <= nplusl; i++){
+            for(int j=1; j<=1; j++){
+                if(i<=n){
+                    gel(gel(cbeforemul, i), j) = gel(gel(ct_1->comp1, i), j);
+                    gel(gel(c_1beforemul, i), j) = gel(gel(ct_2->comp1, i), j);
+                    
+                }
+                else{
+                    gel(gel(cbeforemul, i), j) = gel(gel(ct_1->comp2, i-n), j);
+                    gel(gel(c_1beforemul, i), j) = gel(gel(ct_2->comp2, i-n), j);
+                }
+            }
+        }
+        
+        GEN cmul = RgM_transmul(cbeforemul, c_1beforemul);
+        cipher_text* ret = new cipher_text;
+        ret->comp1 = cmul;
+        ret->comp2 = stoi(0);
+        ret->flag = 2;
+        return ret;
+    }
 }
 
 GEN create_message_matrix(int message, int l){

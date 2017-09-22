@@ -46,7 +46,7 @@ public:
     
     ciphertext operator+(ciphertext &ct){
         ciphertext result;
-        result.value = addition(this->value, ct.value);
+        result.value = addition(this->value, ct.value, params);
         result.params = params;
         result.pk = this->pk;
         return result;
