@@ -613,8 +613,8 @@ def addition(ct_1, ct_2, params, pk, g):
     return _Aono.addition(ct_1, ct_2, params, pk, g)
 addition = _Aono.addition
 
-def subtraction(ct_1, ct_2):
-    return _Aono.subtraction(ct_1, ct_2)
+def subtraction(ct_1, ct_2, params, pk, g):
+    return _Aono.subtraction(ct_1, ct_2, params, pk, g)
 subtraction = _Aono.subtraction
 
 def create_message_matrix(*args):

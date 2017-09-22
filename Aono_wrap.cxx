@@ -8385,15 +8385,27 @@ SWIGINTERN PyObject *_wrap_subtraction(PyObject *SWIGUNUSEDPARM(self), PyObject 
   PyObject *resultobj = 0;
   cipher_text *arg1 = (cipher_text *) 0 ;
   cipher_text *arg2 = (cipher_text *) 0 ;
+  parameters *arg3 = (parameters *) 0 ;
+  public_key_pack *arg4 = (public_key_pack *) 0 ;
+  globalvars *arg5 = (globalvars *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
   int res2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  void *argp5 = 0 ;
+  int res5 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
   cipher_text *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:subtraction",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OOOOO:subtraction",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_cipher_text, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "subtraction" "', argument " "1"" of type '" "cipher_text *""'"); 
@@ -8404,7 +8416,22 @@ SWIGINTERN PyObject *_wrap_subtraction(PyObject *SWIGUNUSEDPARM(self), PyObject 
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "subtraction" "', argument " "2"" of type '" "cipher_text *""'"); 
   }
   arg2 = reinterpret_cast< cipher_text * >(argp2);
-  result = (cipher_text *)subtraction(arg1,arg2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_parameters, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "subtraction" "', argument " "3"" of type '" "parameters *""'"); 
+  }
+  arg3 = reinterpret_cast< parameters * >(argp3);
+  res4 = SWIG_ConvertPtr(obj3, &argp4,SWIGTYPE_p_public_key_pack, 0 |  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "subtraction" "', argument " "4"" of type '" "public_key_pack *""'"); 
+  }
+  arg4 = reinterpret_cast< public_key_pack * >(argp4);
+  res5 = SWIG_ConvertPtr(obj4, &argp5,SWIGTYPE_p_globalvars, 0 |  0 );
+  if (!SWIG_IsOK(res5)) {
+    SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "subtraction" "', argument " "5"" of type '" "globalvars *""'"); 
+  }
+  arg5 = reinterpret_cast< globalvars * >(argp5);
+  result = (cipher_text *)subtraction(arg1,arg2,arg3,arg4,arg5);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_cipher_text, 0 |  0 );
   return resultobj;
 fail:
