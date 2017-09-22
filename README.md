@@ -29,7 +29,7 @@ The following cases of operations have been implemented. Support for other cases
 The scheme only supports `ONE` homomorphic multiplication at the moment.<br />
 #### `Notations`: 
  * `normal-ciphertext` means a ciphertext which has never been refreshed via either key rotation or security update and has only been operated additively or has never undergone any operation is just fresh.
- * `mult-ciphertext` means a ciphertext which has undergone `ONE` multiplication no matter if it has undergone key rotation or security update before or not. Note that a `mult-ciphertext` cannot be rotated or refreshed by key rotation or security update because of it's peculiar structure. It has to be decrypted.
+ * `mult-ciphertext` means a ciphertext which has undergone `ONE` multiplication no matter if it has undergone key rotation or security update before or not. Note that a `mult-ciphertext` `CANNOT` be rotated or refreshed by key rotation or security update because of it's peculiar structure. It has to be decrypted.
  * `rotated-ciphertext` means a ciphertext which has undergone refreshment via either key rotation or security update. <br />
 #### `NOTE`: 
 If `+` is supported it implies `-` is permitted as well. <br />
