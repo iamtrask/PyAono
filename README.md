@@ -25,12 +25,18 @@ We call it `Security Update` if the paramters have this relation ```n1 < n2```, 
 
 ### Notes regarding the use and order of homomorphic function and key switching [`Important`]
 The following cases of operations have been implemented. Support for other cases might require some more literature reading and will follow shortly. Please take a look at he following options which are presently supported: <br />
+`NOTE`: The scheme only supports `ONE` homomorphic multiplication at the moment.<br />
 `Notations`: 
-* `normal-ciphertext` means a ciphertext which has never been refreshed via either key rotation or security update and has only been operated additively or has never undergone any operation is just fresh.
-* `mult-ciphertext` means a ciphertext which has undergone one multiplication no matter if it has undergone key rotation or security update before or not. Note that a `mult-ciphertext` cannot be rotated or refreshed by key rotation or security update because of it's peculiar structure. It has to be decrypted.
-* `rotated-ciphertext` means a ciphertext which has undergone refreshment via either key rotation or security update. <br />
-`Permitted operations`:
-* ``
+ * `normal-ciphertext` means a ciphertext which has never been refreshed via either key rotation or security update and has only been operated additively or has never undergone any operation is just fresh.
+ * `mult-ciphertext` means a ciphertext which has undergone `ONE` multiplication no matter if it has undergone key rotation or security update before or not. Note that a `mult-ciphertext` cannot be rotated or refreshed by key rotation or security update because of it's peculiar structure. It has to be decrypted.
+ * `rotated-ciphertext` means a ciphertext which has undergone refreshment via either key rotation or security update. <br />
+`NOTE`: If '+' is supported it implies `-` is permitted as well. <br />
+`Permitted operations and their outputs`:
+ * ``` normal-ciphertext + normal-ciphertext = normal-ciphertext```  and ``` normal-ciphertext * normal-ciphertext = mult-ciphertext```
+ * ```mult-ciphertext + mult-ciphertext = mult-ciphertext```
+ * ```rotated-ciphertext + rotated-ciphertext = rotated-ciphertext``` and ```rotated-ciphertext * rotated-ciphertext = mult-ciphertext```
+ * ```rotated-ciphertext + normal-ciphertext = rotated-ciphertext``` and ```rotated-ciphertext * normal-ciphertext = mult-ciphertext```
+ * ```normal-ciphertext + rotated-ciphertext = rotated-ciphertext``` and ```normal-ciphertext * rotated-ciphertext = mult-ciphertext```
 
 --------
 
