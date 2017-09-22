@@ -39,6 +39,13 @@ If `+` is supported it implies `-` is permitted as well. <br />
  * ```rotated-ciphertext + rotated-ciphertext = rotated-ciphertext``` and ```rotated-ciphertext * rotated-ciphertext = mult-ciphertext```
  * ```rotated-ciphertext + normal-ciphertext = rotated-ciphertext``` and ```rotated-ciphertext * normal-ciphertext = mult-ciphertext```
  * ```normal-ciphertext + rotated-ciphertext = rotated-ciphertext``` and ```normal-ciphertext * rotated-ciphertext = mult-ciphertext```
+ * ```mult-ciphertext + normal-ciphertext = mult-ciphertext``` and ```normal-ciphertext + mult-ciphertext = mult-ciphertext```[?]
+ * ```mult-ciphertext + rotated-ciphertext = mult-ciphertext``` and ```rotated-ciphertext + mult-ciphertext = mult-ciphertext```[?]
+
+#### `[?] Meaning`:
+The above bullets marked with [?] means that these operations don't exist conventionally in the actual paper. I have implemented them as my own decision given they might come in handy during the course of our project. I implemented them in this way (illustrating just one example, rest are similar to this one):<br />
+```mult-ciphertext + (normal-ciphertext-of-1s * normal-ciphertext) = mult-ciphertext```<br />
+`normal-ciphertext-of-1s` mean that it is a ciphertext which is deliberately made my encrypting a vector of just all 1s, so that if it is multiplied with anything (say `x`), this `x` remains same, but since `x` is of type - `normal-ciphertext` and also this `normal-ciphertext-of-1s` is also of the type - `normal-ciphertext`, this means their homomorphic multiplication `*` will yield a ciphertext encrypting `x` of the type - `mult-ciphertext`. This makes the whole above homomorphic addition as ```mult-ciphertext + mult-ciphertext = mult-ciphertext```.
 
 --------
 
