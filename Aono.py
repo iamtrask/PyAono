@@ -597,21 +597,25 @@ def gen_params(arg1, l, n, s, sigma, degree_p):
     return _Aono.gen_params(arg1, l, n, s, sigma, degree_p)
 gen_params = _Aono.gen_params
 
-def addition(ct_1, ct_2):
-    return _Aono.addition(ct_1, ct_2)
+def create_message_matrix_repeated_input(arg1, arg2):
+    return _Aono.create_message_matrix_repeated_input(arg1, arg2)
+create_message_matrix_repeated_input = _Aono.create_message_matrix_repeated_input
+
+def multiplication(arg1, arg2, arg3):
+    return _Aono.multiplication(arg1, arg2, arg3)
+multiplication = _Aono.multiplication
+
+def encrypt_outside_class(m, pk, params, g):
+    return _Aono.encrypt_outside_class(m, pk, params, g)
+encrypt_outside_class = _Aono.encrypt_outside_class
+
+def addition(ct_1, ct_2, params, pk, g):
+    return _Aono.addition(ct_1, ct_2, params, pk, g)
 addition = _Aono.addition
 
 def subtraction(ct_1, ct_2):
     return _Aono.subtraction(ct_1, ct_2)
 subtraction = _Aono.subtraction
-
-def multiplication(ct_1, ct_2, params):
-    return _Aono.multiplication(ct_1, ct_2, params)
-multiplication = _Aono.multiplication
-
-def create_message_matrix_repeated_input(message, l):
-    return _Aono.create_message_matrix_repeated_input(message, l)
-create_message_matrix_repeated_input = _Aono.create_message_matrix_repeated_input
 
 def create_message_matrix(*args):
     return _Aono.create_message_matrix(*args)

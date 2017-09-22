@@ -31,6 +31,15 @@ ct = ciphertext(create_message_matrix(4, 64), keys3.pk, keys3.pk.params)
 print "Multiplying rotated-ciphertext with normal-ciphetext"
 c = a * ct
 print_GEN(get_element(get_element(c.decrypt(keys3.sk), 0), 0))
+print "Adding mult-ciphertext with normal-ciphetext"
+c1 = c + ct
+print_GEN(get_element(get_element(c1.decrypt(keys3.sk), 0), 0))
+print "Adding mult-ciphertext with nested normal-ciphetexts"
+c2 = (c1 + ct) + ct
+print_GEN(get_element(get_element(c2.decrypt(keys3.sk), 0), 0))
+print "Adding mult-ciphertext with nested rotated-ciphetexts"
+c2 = (c1 + a) + a
+print_GEN(get_element(get_element(c2.decrypt(keys3.sk), 0), 0))
 print "Adding rotated-ciphertext with normal-ciphetext"
 c = a + ct
 print_GEN(get_element(get_element(c.decrypt(keys3.sk), 0), 0))

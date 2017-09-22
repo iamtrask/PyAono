@@ -8203,62 +8203,31 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_addition(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_create_message_matrix_repeated_input(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  cipher_text *arg1 = (cipher_text *) 0 ;
-  cipher_text *arg2 = (cipher_text *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
+  int arg1 ;
+  int arg2 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  cipher_text *result = 0 ;
+  GEN result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:addition",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_cipher_text, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "addition" "', argument " "1"" of type '" "cipher_text *""'"); 
-  }
-  arg1 = reinterpret_cast< cipher_text * >(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_cipher_text, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "addition" "', argument " "2"" of type '" "cipher_text *""'"); 
-  }
-  arg2 = reinterpret_cast< cipher_text * >(argp2);
-  result = (cipher_text *)addition(arg1,arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_cipher_text, 0 |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_subtraction(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  cipher_text *arg1 = (cipher_text *) 0 ;
-  cipher_text *arg2 = (cipher_text *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  cipher_text *result = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:subtraction",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_cipher_text, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "subtraction" "', argument " "1"" of type '" "cipher_text *""'"); 
-  }
-  arg1 = reinterpret_cast< cipher_text * >(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_cipher_text, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "subtraction" "', argument " "2"" of type '" "cipher_text *""'"); 
-  }
-  arg2 = reinterpret_cast< cipher_text * >(argp2);
-  result = (cipher_text *)subtraction(arg1,arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_cipher_text, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"OO:create_message_matrix_repeated_input",&obj0,&obj1)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "create_message_matrix_repeated_input" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = static_cast< int >(val1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "create_message_matrix_repeated_input" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  result = (GEN)create_message_matrix_repeated_input(arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_long, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -8305,6 +8274,144 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_encrypt_outside_class(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  GEN arg1 = (GEN) 0 ;
+  public_key_pack *arg2 = (public_key_pack *) 0 ;
+  parameters *arg3 = (parameters *) 0 ;
+  globalvars *arg4 = (globalvars *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  cipher_text *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:encrypt_outside_class",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_long, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "encrypt_outside_class" "', argument " "1"" of type '" "GEN""'"); 
+  }
+  arg1 = reinterpret_cast< GEN >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_public_key_pack, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "encrypt_outside_class" "', argument " "2"" of type '" "public_key_pack *""'"); 
+  }
+  arg2 = reinterpret_cast< public_key_pack * >(argp2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_parameters, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "encrypt_outside_class" "', argument " "3"" of type '" "parameters *""'"); 
+  }
+  arg3 = reinterpret_cast< parameters * >(argp3);
+  res4 = SWIG_ConvertPtr(obj3, &argp4,SWIGTYPE_p_globalvars, 0 |  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "encrypt_outside_class" "', argument " "4"" of type '" "globalvars *""'"); 
+  }
+  arg4 = reinterpret_cast< globalvars * >(argp4);
+  result = (cipher_text *)encrypt_outside_class(arg1,arg2,arg3,arg4);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_cipher_text, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_addition(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  cipher_text *arg1 = (cipher_text *) 0 ;
+  cipher_text *arg2 = (cipher_text *) 0 ;
+  parameters *arg3 = (parameters *) 0 ;
+  public_key_pack *arg4 = (public_key_pack *) 0 ;
+  globalvars *arg5 = (globalvars *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  void *argp5 = 0 ;
+  int res5 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  cipher_text *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOO:addition",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_cipher_text, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "addition" "', argument " "1"" of type '" "cipher_text *""'"); 
+  }
+  arg1 = reinterpret_cast< cipher_text * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_cipher_text, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "addition" "', argument " "2"" of type '" "cipher_text *""'"); 
+  }
+  arg2 = reinterpret_cast< cipher_text * >(argp2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_parameters, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "addition" "', argument " "3"" of type '" "parameters *""'"); 
+  }
+  arg3 = reinterpret_cast< parameters * >(argp3);
+  res4 = SWIG_ConvertPtr(obj3, &argp4,SWIGTYPE_p_public_key_pack, 0 |  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "addition" "', argument " "4"" of type '" "public_key_pack *""'"); 
+  }
+  arg4 = reinterpret_cast< public_key_pack * >(argp4);
+  res5 = SWIG_ConvertPtr(obj4, &argp5,SWIGTYPE_p_globalvars, 0 |  0 );
+  if (!SWIG_IsOK(res5)) {
+    SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "addition" "', argument " "5"" of type '" "globalvars *""'"); 
+  }
+  arg5 = reinterpret_cast< globalvars * >(argp5);
+  result = (cipher_text *)addition(arg1,arg2,arg3,arg4,arg5);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_cipher_text, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_subtraction(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  cipher_text *arg1 = (cipher_text *) 0 ;
+  cipher_text *arg2 = (cipher_text *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  cipher_text *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:subtraction",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_cipher_text, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "subtraction" "', argument " "1"" of type '" "cipher_text *""'"); 
+  }
+  arg1 = reinterpret_cast< cipher_text * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_cipher_text, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "subtraction" "', argument " "2"" of type '" "cipher_text *""'"); 
+  }
+  arg2 = reinterpret_cast< cipher_text * >(argp2);
+  result = (cipher_text *)subtraction(arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_cipher_text, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_create_message_matrix__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   int arg1 ;
@@ -8329,37 +8436,6 @@ SWIGINTERN PyObject *_wrap_create_message_matrix__SWIG_0(PyObject *SWIGUNUSEDPAR
   } 
   arg2 = static_cast< int >(val2);
   result = (GEN)create_message_matrix(arg1,arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_long, 0 |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_create_message_matrix_repeated_input(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  int arg1 ;
-  int arg2 ;
-  int val1 ;
-  int ecode1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  GEN result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:create_message_matrix_repeated_input",&obj0,&obj1)) SWIG_fail;
-  ecode1 = SWIG_AsVal_int(obj0, &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "create_message_matrix_repeated_input" "', argument " "1"" of type '" "int""'");
-  } 
-  arg1 = static_cast< int >(val1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "create_message_matrix_repeated_input" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  result = (GEN)create_message_matrix_repeated_input(arg1,arg2);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_long, 0 |  0 );
   return resultobj;
 fail:
@@ -8822,10 +8898,11 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"set_error_modulo", _wrap_set_error_modulo, METH_VARARGS, NULL},
 	 { (char *)"access_value_pk", _wrap_access_value_pk, METH_VARARGS, NULL},
 	 { (char *)"gen_params", _wrap_gen_params, METH_VARARGS, NULL},
+	 { (char *)"create_message_matrix_repeated_input", _wrap_create_message_matrix_repeated_input, METH_VARARGS, NULL},
+	 { (char *)"multiplication", _wrap_multiplication, METH_VARARGS, NULL},
+	 { (char *)"encrypt_outside_class", _wrap_encrypt_outside_class, METH_VARARGS, NULL},
 	 { (char *)"addition", _wrap_addition, METH_VARARGS, NULL},
 	 { (char *)"subtraction", _wrap_subtraction, METH_VARARGS, NULL},
-	 { (char *)"multiplication", _wrap_multiplication, METH_VARARGS, NULL},
-	 { (char *)"create_message_matrix_repeated_input", _wrap_create_message_matrix_repeated_input, METH_VARARGS, NULL},
 	 { (char *)"create_message_matrix", _wrap_create_message_matrix, METH_VARARGS, NULL},
 	 { (char *)"see_ciphertext", _wrap_see_ciphertext, METH_VARARGS, NULL},
 	 { (char *)"power2", _wrap_power2, METH_VARARGS, NULL},
