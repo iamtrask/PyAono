@@ -60,36 +60,28 @@ The API can be imported using the command ```import Aono```. It currently suppor
 #### Arguments: ```pari_size (int)```, ```max_prime (int)```
 ### 2. ```pari_close()```
 ```pari_close()``` function has to be called at the end of each program to clear the memory used.
-#### Arguments: ```x (GEN)```, ```i (int)```
-### 5. ```print_GEN(x)```
-```print_GEN()``` function prints the `GEN` variable `x`.
-### 6. ```create_message_matrix(*x / x, l)```
-```create_message_matrix(*x / x, l)``` function is used to make a PARI `t_MATRIX` object, which is just a conventional matrix, having a dimension of ```1*l``` (a row matrix) with the elements same as the input vector `x`. If input is just a number, then the first element of the row matrix is set as `x` and rest as `0`.
-#### Arguments: ```input (int* or int)```, ```l (int)```
-### 7. ```see_ciphertext(c, i)```
-```see_ciphertext(c, i)``` function is used to access the contents of a ciphertext (type `struct cipher_text`). Since the ciphertext has 2 components, index `i` is used to decide which component to access, with `0` for component 1 and component 2 otherwise.
-#### Arguments: ```c (cipher_text*)```, ```i (int)```
 
 --------
 
 ## Classes:
+```This class abstracts the GEN variable in C++, making it available through python interface. The class is compatible with +, *, /, -, __getitem__ , %, and print.```<br />
 
 ### ```parameters```
   * Class Data:
     1. `n`, `s`, `sigma`, `l`, `lambda` (`ints`)
-    2. `q`, `p` (`GEN`)
+    2. `q`, `p` (`pari_GEN`)
 
 ### ```secret_key```
   * Class Data:
-    1. `sk` (`GEN`)
+    1. `sk` (`pari_GEN`)
     2. `params` (`parameters*`)
 
   * ```__init__(self, sk = None, parmas = None)```   
     The constructor initiates class data. 
-    Arguments: `sk` (`GEN`), `params` (`parameters*`)
+    Arguments: `sk` (`pari_GEN`), `params` (`parameters*`)
 
   * ```decrypt(self, ct)```   
-    ```decrypt()``` method returns the plaintext (`GEN`) encrypted in ciphertext `ct`.    Arguments: `ct` (`GEN`) 
+    ```decrypt()``` method returns the plaintext (`pari_GEN`) encrypted in ciphertext `ct`.    Arguments: `ct` (`pari_GEN`) 
 
   * ```serialize(self)```   
     TO BE IMPLEMENTED
@@ -106,7 +98,7 @@ The API can be imported using the command ```import Aono```. It currently suppor
 
   * ```encrypt(self, pt)```   
     ```encrypt()``` method returns the ciphertext (`GEN`) which encrypts plaintext `pt`. 
-    Arguments: `pt` (`GEN`)
+    Arguments: `pt` (`pari_GEN`)
 
   * ```serialize(self)```   
     TO BE IMPLEMENTED
@@ -118,7 +110,8 @@ The API can be imported using the command ```import Aono```. It currently suppor
 
 ### ```key_gen```
   * ```generate_key(self, lambda, l, n, s, sigma, degree_p)```
-    ```generate_key()``` method returns the keys, which is of type `key_pair`. Here `s` defines the tailprune and `degree_p` defines the `bit_size` of `p` to be generated. Arguments: `lambda` (`int`), `l` (`int`), `n` (`int`), `s` (`int`), `sigma` (`int`), `degree_p` (`int`).
+    ```generate_key()``` method returns the keys, which is of type `key_pair`. Here `s` defines the tailprune and `degree_p` defines the `bit_size` of `p` to be generated. 
+    Arguments: `lambda` (`int`), `l` (`int`), `n` (`int`), `s` (`int`), `sigma` (`int`), `degree_p` (`int`).
 
   * ```deserialize(self)```   
     TO BE IMPLEMENTED
@@ -126,17 +119,17 @@ The API can be imported using the command ```import Aono```. It currently suppor
 ### ```ciphertext```   
     The class is compatible with `’+’, '*', and '-' operators`
   * Class Data:
-    1. `value` (`GEN`)
+    1. `value` (`pari_GEN`)
     2. `pk` (`public_key*`)
     3. `params` (`parameters*`)
 
   * ```__init__(self, plaintext = None, pk, params)```  
-    The constuctor method takes two arguments: `plaintext` (`GEN` variable), `pk` (`public_key*`), `params` (`parameters*`)
+    The constuctor method takes two arguments: `plaintext` (`pari_GEN` variable), `pk` (`public_key*`), `params` (`parameters*`)
 
 TODO - Remove `params`, it can be taken from `pk`.
 
   * ```decrypt(self, sk)```  
-    ```decrypt()``` method returns the decrypted `ciphertext` which is `GEN` variable. 
+    ```decrypt()``` method returns the decrypted `ciphertext` which is `pari_GEN` variable. 
 Arguments: `sk` (`secret_key*`)
 
 ### ```updation_key```
@@ -145,8 +138,8 @@ Arguments: `sk` (`secret_key*`)
     2. `params` (`parameters*`)
     3. `old_params` (`parameters*`)
     4. `g` (`globalvars*`)
-    5. `XComponent` (`GEN`)
-    6. `YComponent` (`GEN`)
+    5. `XComponent` (`pari_GEN`)
+    6. `YComponent` (`pari_GEN`)
 
   * ```__init__(self, X, Y, params, params_old, g, pk)``` 
     The constructor initiates the class data. 
