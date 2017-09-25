@@ -21,8 +21,19 @@ public:
     
     pari_GEN decrypt(cipher_text* ct){
         GEN m;
-        if(ct->flag==1)
-            m = lift(gmodulo(lift(gadd(gmul(ct->comp1.value, sk.value), ct->comp2.value)), this->params->p.value));
+        if(ct->flag==1){
+            m = lift(gadd(gmul(ct->comp1.value, sk.value), ct->comp2.value));
+            
+            for(int i=1; i<=lg(m)-1; i++){
+                    for(int j=1; j<=lg(gel(m, 1))-1; j++){
+                        if(gcmp(gmul(stoi(2), gel(gel(m, i), j)), params->q.value) == 1){
+                            gel(gel(m, i), j) = gsub(gel(gel(m, i), j), params->q.value);
+                        }
+                    }
+                }
+            m = lift(gmodulo(m, params->p.value));
+        }
+        
         else if(ct->flag==2){
             GEN SIMatrix = zeromatcopy(params->n+params->l, params->l);
             GEN I = matid(params->l);
@@ -38,7 +49,16 @@ public:
                 }
             }
             
-            m = lift(gmodulo(lift(gmul(RgM_transmul(SIMatrix, ct->comp1.value), SIMatrix)), params->p.value));
+            m = lift(gmul(RgM_transmul(SIMatrix, ct->comp1.value), SIMatrix));
+            
+            for(int i=1; i<=lg(m)-1; i++){
+                for(int j=1; j<=lg(gel(m, 1))-1; j++){
+                    if(gcmp(gmul(stoi(2), gel(gel(m, i), j)), params->q.value) == 1){
+                        gel(gel(m, i), j) = gsub(gel(gel(m, i), j), params->q.value);
+                    }
+                }
+            }
+            m = lift(gmodulo(m, params->p.value));
             
         }
         else{
@@ -55,7 +75,15 @@ public:
                     }
                 }
             }
-            m = lift(gmodulo(lift(gmul(ct->comp1.value, SIMatrix)), params->p.value));
+            m = lift(gmul(ct->comp1.value, SIMatrix));
+            for(int i=1; i<=lg(m)-1; i++){
+                for(int j=1; j<=lg(gel(m, 1))-1; j++){
+                    if(gcmp(gmul(stoi(2), gel(gel(m, i), j)), params->q.value) == 1){
+                        gel(gel(m, i), j) = gsub(gel(gel(m, i), j), params->q.value);
+                    }
+                }
+            }
+            m = lift(gmodulo(m, params->p.value));
         }
         pari_GEN mret;
         mret.value = m;

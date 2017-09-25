@@ -1033,15 +1033,16 @@ pari_GEN create_message_matrix_repeated_input(int message, int l){
     return ret;
 }
 
-pari_GEN create_message_matrix(int* message, int l){
+pari_GEN create_message_matrix(pari_GEN message, int l){
     GEN m = zeromatcopy(1, l);
     for(int i = 1; i <= l; i++){
         for(int j=1; j<=1; j++){
-            if (i>sizeof(message)/sizeof(*message)){
+            if (i>lg(message.value)-1){
                 gel(gel(m, i), j) = stoi(0);
             }
-            else
-                gel(gel(m, i), j) = stoi(message[i-1]);
+            else{
+                gel(gel(m, i), j) = gel(message.value, i);
+            }
         }
     }
     pari_GEN ret;

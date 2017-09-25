@@ -24,6 +24,17 @@ public:
         this->params = params;
     }
     
+    ciphertext(int m, public_key* pk, parameters* params){
+        pari_GEN inp;
+        inp.value = cgetg(2, t_VEC);
+        gel(inp.value, 1) = stoi(m);
+        pari_GEN messagepacked = create_message_matrix(inp, params->l);
+        this->degree = 2;
+        this->pk = pk;
+        this->value = pk->encrypt(messagepacked);
+        this->params = params;
+    }
+    
     ciphertext(cipher_text* ct, public_key* pk, parameters* params){
         this->degree = 2;
         this->pk = pk;
@@ -31,10 +42,12 @@ public:
         this->params = params;
     }
     
-    void packing_method(pari_GEN m, public_key* pk){
+    void packing_method(pari_GEN m, public_key* pk, parameters* params){
+        pari_GEN messagepacked = create_message_matrix(m, params->l);
         this->degree = 2;
         this->pk = pk;
-        this->value = pk->encrypt(m);
+        this->value = pk->encrypt(messagepacked);
+        this->params = params;
     }
     
     void initialize(pari_GEN m, public_key* pk, parameters* params){
