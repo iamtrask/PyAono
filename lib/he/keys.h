@@ -23,7 +23,6 @@ public:
         GEN m;
         if(ct->flag==1){
             m = lift(gadd(gmul(ct->comp1.value, sk.value), ct->comp2.value));
-            
             for(int i=1; i<=lg(m)-1; i++){
                     for(int j=1; j<=lg(gel(m, 1))-1; j++){
                         if(gcmp(gmul(stoi(2), gel(gel(m, i), j)), params->q.value) == 1){

@@ -11,56 +11,58 @@ public:
     
     ~ciphertext(){};
     
-    ciphertext(public_key* pk, parameters* params){
+    ciphertext(public_key* pk){
         this->degree = 0;
         this->pk = pk;
-        this->params = params;
+        this->params = pk->params;
     }
     
-    ciphertext(pari_GEN m, public_key* pk, parameters* params){
+    ciphertext(pari_GEN m, public_key* pk){
         this->degree = 2;
         this->pk = pk;
         this->value = pk->encrypt(m);
-        this->params = params;
+        this->params = pk->params;
     }
     
-    ciphertext(int m, public_key* pk, parameters* params){
+    ciphertext(int m, public_key* pk){
         pari_GEN inp;
         inp.value = cgetg(2, t_VEC);
         gel(inp.value, 1) = stoi(m);
+        this->params = pk->params;
         pari_GEN messagepacked = create_message_matrix(inp, params->l);
         this->degree = 2;
         this->pk = pk;
         this->value = pk->encrypt(messagepacked);
-        this->params = params;
+        
     }
     
-    ciphertext(cipher_text* ct, public_key* pk, parameters* params){
+    ciphertext(cipher_text* ct, public_key* pk){
         this->degree = 2;
         this->pk = pk;
         this->value = ct;
-        this->params = params;
+        this->params = pk->params;
     }
     
-    void packing_method(pari_GEN m, public_key* pk, parameters* params){
+    void packing_method(pari_GEN m, public_key* pk){
+        this->params = pk->params;
         pari_GEN messagepacked = create_message_matrix(m, params->l);
         this->degree = 2;
         this->pk = pk;
         this->value = pk->encrypt(messagepacked);
-        this->params = params;
+        
     }
     
-    void initialize(pari_GEN m, public_key* pk, parameters* params){
+    void initialize(pari_GEN m, public_key* pk){
         this->degree = 2;
         this->pk = pk;
         this->value = pk->encrypt(m);
-        this->params = params;
+        this->params = pk->params;
     }
     
-    void initialize(public_key* pk, parameters* params){
+    void initialize(public_key* pk){
         this->degree = 0;
         this->pk = pk;
-        this->params = params;
+        this->params = pk->params;
     }
     
     ciphertext operator+(ciphertext &ct){
@@ -172,7 +174,7 @@ public:
         ctret->comp1 = cdashret;
         ctret->comp2 = comp2ret;
         ctret->flag = 3;
-        ciphertext cp = ciphertext(ctret, pk, params);
+        ciphertext cp = ciphertext(ctret, pk);
         return cp;
     }
     
