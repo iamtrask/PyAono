@@ -60,10 +60,6 @@ The API can be imported using the command ```import Aono```. It currently suppor
 #### Arguments: ```pari_size (int)```, ```max_prime (int)```
 ### 2. ```pari_close()```
 ```pari_close()``` function has to be called at the end of each program to clear the memory used.
-### 3. ```create_GEN(x)```
-```create_GEN()``` function converts integer `x` to `GEN`.
-### 4. ```get_element(x, i)```
-```get_element()``` function returns the `i^th` element of `GEN` variable `x`.  Index `i` is used to access the different components with indexing starting from `0`.
 #### Arguments: ```x (GEN)```, ```i (int)```
 ### 5. ```print_GEN(x)```
 ```print_GEN()``` function prints the `GEN` variable `x`.
@@ -174,7 +170,7 @@ Arguments: `sk` (`secret_key*`)
 - [x] Support for plaintext-ciphertext multiplication. <br/>
 - [x] Basic testing suite. <br/>
 - [x] Taking care of negative errors by mapping ciphertext to a symmteric group before decryption. <br />
-- [ ] Add a matrix reading support to testing suite. <br/>
-- [ ] Add key switching tests to testing suite. <br/>
-- [ ] Update README with pari_GEN. <br/>
+- [x] Add a matrix reading support to testing suite. <br/>
+- [x] Add key switching tests to testing suite. <br/>
+- [x] Update README with pari_GEN. <br/>
 
