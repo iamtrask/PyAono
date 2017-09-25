@@ -172,5 +172,8 @@ Arguments: `sk` (`secret_key*`)
 ## TODO:
 - [x] Tweaks to homomorphic functions to support rotated or updated ciphertexts. <br/>
 - [x] Support for plaintext-ciphertext multiplication. <br/>
-- [ ] Basic testing suite. <br/>
-- [ ] Taking care of negative errors by mapping ciphertext to a symmteric group before decryption. <br />
+- [x] Basic testing suite. <br/>
+- [x] Taking care of negative errors by mapping ciphertext to a symmteric group before decryption. <br />
+- [ ] Add a matrix reading support to testing suite. <br/>
+- [ ] Add key switching tests to testing suite. <br/>
+
