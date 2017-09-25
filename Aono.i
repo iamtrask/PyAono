@@ -20,7 +20,7 @@ typedef long *GEN;
 %extend pari_GEN{
     pari_GEN(PyObject *int_list){
         pari_GEN* result = new pari_GEN();
-        if(PyList_Size(PyList_GetItem( int_list, 0)) == -1){
+        if(!PyList_Check(PyList_GetItem( int_list, 0))){
             int *array = NULL;
             int nInts;
             if (PyList_Check( int_list ))
