@@ -168,13 +168,6 @@ Arguments: `sk` (`secret_key*`)
     
     
 --------
-
-## Structs:
-
-### ```key_pair```
- * Struct Data:
-   1. `pk`(`public_key`)
-   2. `sk`(`secret_key`)
    
 ## TODO:
 - [x] Tweaks to homomorphic functions to support rotated or updated ciphertexts. <br/>
