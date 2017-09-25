@@ -176,4 +176,5 @@ Arguments: `sk` (`secret_key*`)
 - [x] Taking care of negative errors by mapping ciphertext to a symmteric group before decryption. <br />
 - [ ] Add a matrix reading support to testing suite. <br/>
 - [ ] Add key switching tests to testing suite. <br/>
+- [ ] Update README with pari_GEN. <br/>
 
