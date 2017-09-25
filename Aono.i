@@ -50,6 +50,14 @@ typedef long *GEN;
         return result;
     }
     
+    pari_GEN sub_mat_array(int key_1, int key_2){
+        pari_GEN result;
+        result.value = cgetg(key_2 - key_1 + 1, t_VEC);
+        for(int i = key_1; i < key_2; i++)
+        gel(result.value, i + 1) = gel(gel(self->value, i + 1), 1);
+        return result;
+    }
+    
     pari_GEN sub_array(int key_1, int key_2){
         pari_GEN result;
         result.value = cgetg(key_2 - key_1 + 1, t_VEC);
@@ -60,7 +68,7 @@ typedef long *GEN;
 };
 
 %extend ciphertext{
-    ciphertext(PyObject *int_list, public_key* pk){
+    ciphertext(PyObject *int_list, public_key* pk, parameters* params){
         ciphertext* result = new ciphertext();
         int *array = NULL;
         int nInts;
@@ -78,7 +86,7 @@ typedef long *GEN;
         pt.value = cgetg(nInts + 1, t_VEC);
         for(int i = 0; i < nInts; i++)
             gel(pt.value, i + 1) = stoi(array[i]);
-        result->packing_method(pt, pk);
+        result->packing_method(pt, pk, params);
         return result;
     }
     

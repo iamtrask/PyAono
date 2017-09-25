@@ -1,7 +1,6 @@
 import Aono
 from Aono import *
 
-pari_init(2000000000, 2)
 keysgen = key_gen()
 keys1 = keysgen.generate_key(100, 64, 40, 8, 4, 7)
 message = 33
@@ -24,7 +23,6 @@ a = uk.cipher_switch(ct)
 print "Decrypted message: "
 print_GEN(get_element(get_element(a.decrypt(keys3.sk), 0), 0))
 
-pari_close()
 
 
 

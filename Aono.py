@@ -128,8 +128,8 @@ class ciphertext(_object):
     __swig_destroy__ = _Aono.delete_ciphertext
     __del__ = lambda self: None
 
-    def packing_method(self, m, pk):
-        return _Aono.ciphertext_packing_method(self, m, pk)
+    def packing_method(self, m, pk, params):
+        return _Aono.ciphertext_packing_method(self, m, pk, params)
 
     def initialize(self, *args):
         return _Aono.ciphertext_initialize(self, *args)
@@ -380,6 +380,9 @@ class pari_GEN(_object):
 
     def __getitem__(self, key):
         return _Aono.pari_GEN___getitem__(self, key)
+
+    def sub_mat_array(self, key_1, key_2):
+        return _Aono.pari_GEN_sub_mat_array(self, key_1, key_2)
 
     def sub_array(self, key_1, key_2):
         return _Aono.pari_GEN_sub_array(self, key_1, key_2)
