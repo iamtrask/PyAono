@@ -1,7 +1,6 @@
 import Aono
 from Aono import *
 
-pari_init(2000000000, 2)
 keysgen = key_gen()
 keys1 = keysgen.generate_key(100, 64, 40, 8, 4, 7)
 message = 11
@@ -35,15 +34,17 @@ print "Adding mult-ciphertext with normal-ciphetext"
 c1 = c + ct
 print_GEN(get_element(get_element(c1.decrypt(keys3.sk), 0), 0))
 print "Adding mult-ciphertext with nested normal-ciphetexts"
-c2 = (c1 + ct) + ct
+c2 = ct + (c1 + ct)
 print_GEN(get_element(get_element(c2.decrypt(keys3.sk), 0), 0))
 print "Adding mult-ciphertext with nested rotated-ciphetexts"
 c2 = (c1 + a) + a
 print_GEN(get_element(get_element(c2.decrypt(keys3.sk), 0), 0))
 print "Adding rotated-ciphertext with normal-ciphetext"
-c = a + ct
+c = (a + ct)
 print_GEN(get_element(get_element(c.decrypt(keys3.sk), 0), 0))
-pari_close()
+print "Plaintext multiplication and adding rotated-ciphertext with normal-ciphetext"
+c = 2 * (a + ct)
+print_GEN(get_element(get_element(c.decrypt(keys3.sk), 0), 0))
 
 
 
