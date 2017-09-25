@@ -128,12 +128,8 @@ class ciphertext(_object):
     __swig_destroy__ = _Aono.delete_ciphertext
     __del__ = lambda self: None
 
-    def __init__(self, *args):
-        this = _Aono.new_ciphertext(*args)
-        try:
-            self.this.append(this)
-        except __builtin__.Exception:
-            self.this = this
+    def packing_method(self, m, pk):
+        return _Aono.ciphertext_packing_method(self, m, pk)
 
     def initialize(self, *args):
         return _Aono.ciphertext_initialize(self, *args)
@@ -141,14 +137,24 @@ class ciphertext(_object):
     def __add__(self, ct):
         return _Aono.ciphertext___add__(self, ct)
 
-    def __mul__(self, ct):
-        return _Aono.ciphertext___mul__(self, ct)
-
     def __sub__(self, ct):
         return _Aono.ciphertext___sub__(self, ct)
 
     def decrypt(self, sk):
         return _Aono.ciphertext_decrypt(self, sk)
+
+    def __init__(self, *args):
+        this = _Aono.new_ciphertext(*args)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+
+    def __mul__(self, *args):
+        return _Aono.ciphertext___mul__(self, *args)
+
+    def __rmul__(self, pt):
+        return _Aono.ciphertext___rmul__(self, pt)
 ciphertext_swigregister = _Aono.ciphertext_swigregister
 ciphertext_swigregister(ciphertext)
 
@@ -327,6 +333,65 @@ key_gen_swigregister(key_gen)
 
 M_PI = _Aono.M_PI
 precision = _Aono.precision
+class pari_GEN(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, pari_GEN, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, pari_GEN, name)
+    __repr__ = _swig_repr
+    __swig_setmethods__["value"] = _Aono.pari_GEN_value_set
+    __swig_getmethods__["value"] = _Aono.pari_GEN_value_get
+    if _newclass:
+        value = _swig_property(_Aono.pari_GEN_value_get, _Aono.pari_GEN_value_set)
+
+    def initialize(self, x):
+        return _Aono.pari_GEN_initialize(self, x)
+
+    def __add__(self, GEN_2):
+        return _Aono.pari_GEN___add__(self, GEN_2)
+
+    def __mul__(self, GEN_2):
+        return _Aono.pari_GEN___mul__(self, GEN_2)
+
+    def __truediv__(self, *args):
+        return _Aono.pari_GEN___truediv__(self, *args)
+    __div__ = __truediv__
+
+
+
+    def __sub__(self, GEN_2):
+        return _Aono.pari_GEN___sub__(self, GEN_2)
+
+    def __mod__(self, GEN_2):
+        return _Aono.pari_GEN___mod__(self, GEN_2)
+
+    def __eq__(self, GEN_2):
+        return _Aono.pari_GEN___eq__(self, GEN_2)
+
+    def __init__(self, *args):
+        this = _Aono.new_pari_GEN(*args)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+
+    def __str__(self):
+        return _Aono.pari_GEN___str__(self)
+
+    def __getitem__(self, key):
+        return _Aono.pari_GEN___getitem__(self, key)
+
+    def sub_mat_array(self, *args):
+        return _Aono.pari_GEN_sub_mat_array(self, *args)
+
+    def sub_array(self, key_1, key_2):
+        return _Aono.pari_GEN_sub_array(self, key_1, key_2)
+    __swig_destroy__ = _Aono.delete_pari_GEN
+    __del__ = lambda self: None
+pari_GEN_swigregister = _Aono.pari_GEN_swigregister
+pari_GEN_swigregister(pari_GEN)
+cvar = _Aono.cvar
+
 class parameters(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, parameters, name, value)
@@ -372,7 +437,6 @@ class parameters(_object):
     __del__ = lambda self: None
 parameters_swigregister = _Aono.parameters_swigregister
 parameters_swigregister(parameters)
-cvar = _Aono.cvar
 
 class ProbMatrixPack(_object):
     __swig_setmethods__ = {}
@@ -521,12 +585,12 @@ cipher_text_mult_swigregister = _Aono.cipher_text_mult_swigregister
 cipher_text_mult_swigregister(cipher_text_mult)
 
 
-def get_element(x, index):
-    return _Aono.get_element(x, index)
+def get_element(*args):
+    return _Aono.get_element(*args)
 get_element = _Aono.get_element
 
-def print_GEN(x):
-    return _Aono.print_GEN(x)
+def print_GEN(*args):
+    return _Aono.print_GEN(*args)
 print_GEN = _Aono.print_GEN
 
 def create_GEN(*args):
@@ -640,6 +704,50 @@ bits = _Aono.bits
 def get_updation_parameters(params_old, n, s):
     return _Aono.get_updation_parameters(params_old, n, s)
 get_updation_parameters = _Aono.get_updation_parameters
+
+def plaintext_multiplication(ct, input):
+    return _Aono.plaintext_multiplication(ct, input)
+plaintext_multiplication = _Aono.plaintext_multiplication
+
+import atexit
+pari_init(2000000000, 2)
+atexit.register(pari_close)
+
+class intArray(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, intArray, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, intArray, name)
+    __repr__ = _swig_repr
+
+    def __init__(self, nelements):
+        this = _Aono.new_intArray(nelements)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _Aono.delete_intArray
+    __del__ = lambda self: None
+
+    def __getitem__(self, index):
+        return _Aono.intArray___getitem__(self, index)
+
+    def __setitem__(self, index, value):
+        return _Aono.intArray___setitem__(self, index, value)
+
+    def cast(self):
+        return _Aono.intArray_cast(self)
+    if _newclass:
+        frompointer = staticmethod(_Aono.intArray_frompointer)
+    else:
+        frompointer = _Aono.intArray_frompointer
+intArray_swigregister = _Aono.intArray_swigregister
+intArray_swigregister(intArray)
+
+def intArray_frompointer(t):
+    return _Aono.intArray_frompointer(t)
+intArray_frompointer = _Aono.intArray_frompointer
+
 # This file is compatible with both classic and new-style classes.
 
 
