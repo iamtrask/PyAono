@@ -64,13 +64,13 @@ The API can be imported using the command ```import Aono```. It currently suppor
 --------
 
 ## Classes:
-### pari_GEN
+### ```pari_GEN```
     This class abstracts the GEN variable in C++, making it available through python interface. The class is compatible with +, *, /, -, __getitem__ , %, and print.
   * Class Data:
-    1. value (GEN)
+    1. `value` (`GEN`)
     
-  * \_\_init\_\_(self, x)
-    The constructor converts x to a GEN variable. Arguments: x(int)
+  * ```__init__(self, x)```
+    The constructor converts x to a GEN variable. Arguments: `x` (`int`)
 
 ### ```parameters```
   * Class Data:
