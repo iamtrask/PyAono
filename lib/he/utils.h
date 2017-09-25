@@ -16,8 +16,62 @@
 
 struct timeval tv;
 
+class pari_GEN{
+public:
+    GEN value;
+    
+    pari_GEN(){};
+    
+    pari_GEN(int x){
+        value = stoi(x);
+        return;
+    }
+    
+    void initialize(GEN x){
+        value = x;
+        return;
+    }
+    
+    pari_GEN operator+(const pari_GEN GEN_2){
+        pari_GEN result;
+        result.value = gadd(this->value, GEN_2.value);
+        return result;
+    }
+    
+    pari_GEN operator*(const pari_GEN GEN_2){
+        pari_GEN result;
+        result.value = gmul(this->value, GEN_2.value);
+        return result;
+    }
+    
+    pari_GEN operator/(const pari_GEN GEN_2){
+        pari_GEN result;
+        result.value = gdiv(this->value, GEN_2.value);
+        return result;
+    }
+    
+    pari_GEN operator-(const pari_GEN GEN_2){
+        pari_GEN result;
+        result.value = gsub(this->value, GEN_2.value);
+        return result;
+    }
+    
+    pari_GEN operator%(const pari_GEN GEN_2){
+        pari_GEN result;
+        result.value = gmodulo(this->value, GEN_2.value);
+        return result;
+    }
+    
+    bool operator==(const pari_GEN GEN_2){
+        if(!gequal(this->value, GEN_2.value))
+            return false;
+        else
+            return true;
+    }
+};
+
 struct parameters{
-    GEN q, p;
+    pari_GEN q, p;
     int lambda;
     int l;
     int s, n; // These are changed during rotation
@@ -25,14 +79,14 @@ struct parameters{
 };
 
 struct ProbMatrixPack{
-    GEN P;
+    pari_GEN P;
     std::vector<int> startPos;
     bool isInitialized = false;
 } *pPackglobal;
 
 struct public_key_pack{
-    GEN A;
-    GEN P;
+    pari_GEN A;
+    pari_GEN P;
     int n, s;
 };
 
@@ -43,16 +97,24 @@ struct globalvars{
 
 struct cipher_text{
     int flag = 1;
-    GEN comp1, comp2;
+    pari_GEN comp1, comp2;
 };
 
 struct cipher_text_mult{
     int flag = 2;
-    GEN c;
+    pari_GEN c;
 };
+
+GEN get_element(pari_GEN x, int index){
+    return gel(x.value, index + 1);
+}
 
 GEN get_element(GEN x, int index){
     return gel(x, index + 1);
+}
+
+void print_GEN(pari_GEN x){
+    printf("%s\n", GENtostr(x.value));
 }
 
 void print_GEN(GEN x){
@@ -87,24 +149,26 @@ double Gauss(double mu, double sigma) {
     return mu + sigma*z;
 }
 
-GEN Sample(int n, double sigma) {
-    GEN ret = cgetg(n + 1, t_VEC);
+pari_GEN Sample(int n, double sigma) {
+    pari_GEN ret;
+    ret.value = cgetg(n + 1, t_VEC);
     double z;
     int i;
     
     for (i = 1; i <= n; i++) {
         z = Gauss(0, sigma);
         z = fabs(round(z)); /*absolute value of Gaussian distribution */
-        ret[i] = (long) stoi((long) z);
+        ret.value[i] = (long) stoi((long) z);
     }
     
     return ret;
 }
 
-GEN generate_random(int bit_length){
+pari_GEN generate_random(int bit_length){
     gettimeofday(&tv, NULL);
     setrand(stoi(tv.tv_usec + tv.tv_sec*1000000));
-    GEN r = randomi(gshift(gen_1, bit_length));
+    pari_GEN r;
+    r.value = randomi(gshift(gen_1, bit_length));
     return r;
 }
 
@@ -169,7 +233,9 @@ ProbMatrixPack* genProbabilityMatrix(parameters* params, char* c){
         }
     }
     ProbMatrixPack* pPack = new ProbMatrixPack;
-    pPack->P = tempP;
+    pari_GEN P;
+    P.value = tempP;
+    pPack->P = P;
     pPack->startPos = beginPos;
     pPack->isInitialized = true;
     pPackglobal = pPack;
@@ -227,7 +293,9 @@ ProbMatrixPack* genProbabilityMatrix(parameters* params, int c){
         }
     }
     ProbMatrixPack* pPack = new ProbMatrixPack;
-    pPack->P = tempP;
+    pari_GEN P;
+    P.value = tempP;
+    pPack->P = P;
     pPack->startPos = beginPos;
     pPack->isInitialized = true;
     pPackglobal = pPack;
@@ -248,7 +316,7 @@ int SampleKnuthYao(int c, parameters* params, globalvars* g){
     hit = 0;
     invsample = bounds+1;
     
-    GEN P = g->pPack->P;
+    GEN P = g->pPack->P.value;
     std::vector<int> beginPos = g->pPack->startPos;
     int bitprecision = 64*(precision-2);
     pRows = lg(P)-1;
@@ -305,12 +373,12 @@ void getGEN_MATRIXsize(GEN x){
     printf("%dx%d\n", lg(gel(x, 1))-1, lg(x)-1);
 }
 
-GEN generate_secret_key(parameters* params, globalvars* g){
+pari_GEN generate_secret_key(parameters* params, globalvars* g){
     if(g->pPack->isInitialized == false){
         g = initialize_sampler(params);
     }
-    GEN q = params->q;
-    GEN p = params->p;
+    GEN q = params->q.value;
+    GEN p = params->p.value;
     int lambda = params->lambda;
     int l = params->l;
     int s = params->s;
@@ -323,15 +391,17 @@ GEN generate_secret_key(parameters* params, globalvars* g){
             gel(gel(S, i), j) = lift(gmodulo(stoi(SampleKnuthYao(0, params, g)), stoi(s)));
         }
     }
-    return S;
+    pari_GEN Sret;
+    Sret.value = S;
+    return Sret;
 }
 
-GEN generate_secret_key(parameters* params, int center, globalvars* g){
+pari_GEN generate_secret_key(parameters* params, int center, globalvars* g){
     if(g->pPack->isInitialized == false){
         g = initialize_sampler(params, center);
     }
-    GEN q = params->q;
-    GEN p = params->p;
+    GEN q = params->q.value;
+    GEN p = params->p.value;
     int lambda = params->lambda;
     int l = params->l;
     int s = params->s;
@@ -344,22 +414,24 @@ GEN generate_secret_key(parameters* params, int center, globalvars* g){
             gel(gel(S, i), j) = lift(gmodulo(stoi(SampleKnuthYao(center, params, g)), stoi(s)));
         }
     }
-    return S;
+    pari_GEN Sret;
+    Sret.value = S;
+    return Sret;
 }
 
-public_key_pack* generate_public_key(GEN sk, parameters* params, globalvars* g){
+public_key_pack* generate_public_key(pari_GEN sk, parameters* params, globalvars* g){
     if(g->pPack->isInitialized == false){
         g = initialize_sampler(params);
     }
-    GEN q = params->q;
-    GEN p = params->p;
+    GEN q = params->q.value;
+    GEN p = params->p.value;
     int lambda = params->lambda;
     int l = params->l;
     int s = params->s;
     int n = params->n;
     int modulo = g->errorsModulo;
     
-    GEN S = sk;
+    GEN S = sk.value;
     
     GEN R, A;
     R = zeromatcopy(n, l);
@@ -372,7 +444,7 @@ public_key_pack* generate_public_key(GEN sk, parameters* params, globalvars* g){
     A = zeromatcopy(n, n);
     for(int i = 1; i <= n; i++){
         for(int j=1; j<=n; j++){
-            gel(gel(A, i), j) = gmodulo(generate_random(params->lambda), q);
+            gel(gel(A, i), j) = gmodulo(generate_random(params->lambda).value, q);
         }
     }
     
@@ -381,26 +453,29 @@ public_key_pack* generate_public_key(GEN sk, parameters* params, globalvars* g){
     P = gsub(gmul(p, R), temp);
 
     public_key_pack* pk = new public_key_pack;
-    pk->P = P;
-    pk->A = A;
+    pari_GEN Pret, Aret;
+    Pret.value = P;
+    Aret.value = A;
+    pk->P = Pret;
+    pk->A = Aret;
     pk->n = n;
     pk->s = s;
     return pk;
 }
 
-public_key_pack* generate_public_key(GEN sk, parameters* params, globalvars* g, int center){
+public_key_pack* generate_public_key(pari_GEN sk, parameters* params, globalvars* g, int center){
     if(g->pPack->isInitialized == false){
         g = initialize_sampler(params);
     }
-    GEN q = params->q;
-    GEN p = params->p;
+    GEN q = params->q.value;
+    GEN p = params->p.value;
     int lambda = params->lambda;
     int l = params->l;
     int s = params->s;
     int n = params->n;
     int modulo = g->errorsModulo;
     
-    GEN S = sk;
+    GEN S = sk.value;
     
     GEN R, A;
     R = zeromatcopy(n, l);
@@ -413,7 +488,7 @@ public_key_pack* generate_public_key(GEN sk, parameters* params, globalvars* g, 
     A = zeromatcopy(n, n);
     for(int i = 1; i <= n; i++){
         for(int j=1; j<=n; j++){
-            gel(gel(A, i), j) = gmodulo(generate_random(params->lambda), q);
+            gel(gel(A, i), j) = gmodulo(generate_random(params->lambda).value, q);
         }
     }
     
@@ -422,8 +497,11 @@ public_key_pack* generate_public_key(GEN sk, parameters* params, globalvars* g, 
     P = gsub(gmul(p, R), temp);
     
     public_key_pack* pk = new public_key_pack;
-    pk->P = P;
-    pk->A = A;
+    pari_GEN Pret, Aret;
+    Pret.value = P;
+    Aret.value = A;
+    pk->P = Pret;
+    pk->A = Aret;
     pk->n = n;
     pk->s = s;
     return pk;
@@ -437,10 +515,10 @@ globalvars* set_error_modulo(globalvars* g, int modulo){
 
 GEN access_value_pk(public_key_pack* pk, char flag){
     if(flag == 'a' || flag == 'A'){
-        return pk->A;
+        return pk->A.value;
     }
     else if(flag == 'p' || flag == 'P'){
-        return pk->P;
+        return pk->P.value;
     }
     else if(flag == 'n' || flag == 'N'){
         return stoi(pk->n);
@@ -456,8 +534,11 @@ parameters* gen_params(int lambda, int l, int n, int s, int sigma, int degree_p)
     GEN q = nextprime(gpowgs(stoi(2), lambda));
     GEN p = gadd(gpowgs(stoi(2), degree_p), stoi(1));
     parameters* params = new parameters;
-    params->p = p;
-    params->q = q;
+    pari_GEN pret, qret;
+    pret.value = p;
+    qret.value = q;
+    params->p = pret;
+    params->q = qret;
     params->lambda = lambda;
     params->l = l;
     params->s = s;
@@ -466,10 +547,10 @@ parameters* gen_params(int lambda, int l, int n, int s, int sigma, int degree_p)
     return params;
 }
 
-GEN create_message_matrix_repeated_input(int , int );
+pari_GEN create_message_matrix_repeated_input(int , int );
 cipher_text* multiplication(cipher_text* , cipher_text* , parameters* );
 
-cipher_text* encrypt_outside_class(GEN m, public_key_pack* pk, parameters* params, globalvars* g){
+cipher_text* encrypt_outside_class(pari_GEN m, public_key_pack* pk, parameters* params, globalvars* g){
     GEN e1 = zeromatcopy(1, params->n);
     GEN e2 = zeromatcopy(1, params->n);
     GEN e3 = zeromatcopy(1, params->l);
@@ -485,9 +566,9 @@ cipher_text* encrypt_outside_class(GEN m, public_key_pack* pk, parameters* param
             gel(gel(e3, i), j) = lift(gmodulo(stoi(SampleKnuthYao(0, params, g)), stoi(params->s)));
         }
     }
-    GEN c1, c2;
-    c1 = gadd(RgM_mul(e1, pk->A), gmul(params->p, e2));
-    c2 = gadd(gadd(RgM_mul(e1, pk->P), gmul(params->p, e3)), m);
+    pari_GEN c1, c2;
+    c1.value = gadd(RgM_mul(e1, pk->A.value), gmul(params->p.value, e2));
+    c2.value = gadd(gadd(RgM_mul(e1, pk->P.value), gmul(params->p.value, e3)), m.value);
     cipher_text* ct = new cipher_text;
     ct->comp1 = c1;
     ct->comp2 = c2;
@@ -496,78 +577,96 @@ cipher_text* encrypt_outside_class(GEN m, public_key_pack* pk, parameters* param
 
 cipher_text* addition(cipher_text* ct_1, cipher_text* ct_2, parameters* params, public_key_pack* pk, globalvars* g){
     if (ct_1->flag == 1 && ct_2->flag == 2){
-        GEN messagemat = create_message_matrix_repeated_input(1, params->l);
+        pari_GEN messagemat = create_message_matrix_repeated_input(1, params->l);
         cipher_text* one_enc = encrypt_outside_class(messagemat, pk, params, g);
         
         cipher_text* newct = multiplication(one_enc, ct_1, params);
         GEN ct1, ct2;
-        ct1 = gadd(newct->comp1, ct_2->comp1);
+        ct1 = gadd(newct->comp1.value, ct_2->comp1.value);
         cipher_text* ct = new cipher_text;
-        ct->comp1 = ct1;
-        ct->comp2 = stoi(0);
+        pari_GEN comp1ret, comp2ret;
+        comp1ret.value = ct1;
+        comp2ret.value = stoi(0);
+        ct->comp1 = comp1ret;
+        ct->comp2 = comp2ret;
         ct->flag = 2;
         return ct;
     }
     else if (ct_1->flag == 2 && ct_2->flag == 1){
-        GEN messagemat = create_message_matrix_repeated_input(1, params->l);
+        pari_GEN messagemat = create_message_matrix_repeated_input(1, params->l);
         cipher_text* one_enc = encrypt_outside_class(messagemat, pk, params, g);
         
         cipher_text* newct = multiplication(one_enc, ct_2, params);
         GEN ct1, ct2;
-        ct1 = gadd(ct_1->comp1, newct->comp1);
+        ct1 = gadd(ct_1->comp1.value, newct->comp1.value);
         cipher_text* ct = new cipher_text;
-        ct->comp1 = ct1;
-        ct->comp2 = stoi(0);
+        pari_GEN comp1ret, comp2ret;
+        comp1ret.value = ct1;
+        comp2ret.value = stoi(0);
+        ct->comp1 = comp1ret;
+        ct->comp2 = comp2ret;
         ct->flag = 2;
         return ct;
     }
     else if (ct_1->flag == 3 && ct_2->flag == 2){
-        GEN messagemat = create_message_matrix_repeated_input(1, params->l);
+        pari_GEN messagemat = create_message_matrix_repeated_input(1, params->l);
         cipher_text* one_enc = encrypt_outside_class(messagemat, pk, params, g);
         
         cipher_text* newct = multiplication(one_enc, ct_1, params);
         GEN ct1, ct2;
-        ct1 = gadd(newct->comp1, ct_2->comp1);
+        ct1 = gadd(newct->comp1.value, ct_2->comp1.value);
         cipher_text* ct = new cipher_text;
-        ct->comp1 = ct1;
-        ct->comp2 = stoi(0);
+        pari_GEN comp1ret, comp2ret;
+        comp1ret.value = ct1;
+        comp2ret.value = stoi(0);
+        ct->comp1 = comp1ret;
+        ct->comp2 = comp2ret;
         ct->flag = 2;
         return ct;
     }
     else if (ct_1->flag == 2 && ct_2->flag == 3){
-        GEN messagemat = create_message_matrix_repeated_input(1, params->l);
+        pari_GEN messagemat = create_message_matrix_repeated_input(1, params->l);
         cipher_text* one_enc = encrypt_outside_class(messagemat, pk, params, g);
         
         cipher_text* newct = multiplication(one_enc, ct_2, params);
         GEN ct1, ct2;
-        ct1 = gadd(ct_1->comp1, newct->comp1);
+        ct1 = gadd(ct_1->comp1.value, newct->comp1.value);
         cipher_text* ct = new cipher_text;
-        ct->comp1 = ct1;
-        ct->comp2 = stoi(0);
+        pari_GEN comp1ret, comp2ret;
+        comp1ret.value = ct1;
+        comp2ret.value = stoi(0);
+        ct->comp1 = comp1ret;
+        ct->comp2 = comp2ret;
         ct->flag = 2;
         return ct;
     }
     else if (ct_1->flag == 2 && ct_2->flag == 2){
         GEN ct1, ct2;
-        ct1 = gadd(ct_1->comp1, ct_2->comp1);
+        ct1 = gadd(ct_1->comp1.value, ct_2->comp1.value);
         cipher_text* ct = new cipher_text;
-        ct->comp1 = ct1;
-        ct->comp2 = stoi(0);
+        pari_GEN comp1ret, comp2ret;
+        comp1ret.value = ct1;
+        comp2ret.value = stoi(0);
+        ct->comp1 = comp1ret;
+        ct->comp2 = comp2ret;
         ct->flag = 2;
         return ct;
     }
     else if (ct_1->flag == 3 && ct_2->flag == 3){
         GEN ct1, ct2;
-        ct1 = gadd(ct_1->comp1, ct_2->comp1);
+        ct1 = gadd(ct_1->comp1.value, ct_2->comp1.value);
         cipher_text* ct = new cipher_text;
-        ct->comp1 = ct1;
-        ct->comp2 = stoi(0);
+        pari_GEN comp1ret, comp2ret;
+        comp1ret.value = ct1;
+        comp2ret.value = stoi(0);
+        ct->comp1 = comp1ret;
+        ct->comp2 = comp2ret;
         ct->flag = 3;
         return ct;
     }
     else if (ct_1->flag == 3 && ct_2->flag == 1){
-        GEN q = params->q;
-        GEN p = params->p;
+        GEN q = params->q.value;
+        GEN p = params->p.value;
         int lambda = params->lambda;
         int l = params->l;
         int s = params->s;
@@ -577,26 +676,29 @@ cipher_text* addition(cipher_text* ct_1, cipher_text* ct_2, parameters* params, 
         for(int i = 1; i <= nplusl; i++){
             for(int j=1; j<=1; j++){
                 if(i<=n){
-                    gel(gel(c2changed, i), j) = gel(gel(ct_2->comp1, i), j);
+                    gel(gel(c2changed, i), j) = gel(gel(ct_2->comp1.value, i), j);
                     
                 }
                 else{
-                    gel(gel(c2changed, i), j) = gel(gel(ct_2->comp2, i-n), j);
+                    gel(gel(c2changed, i), j) = gel(gel(ct_2->comp2.value, i-n), j);
                 }
             }
         }
         
         GEN ct1, ct2;
-        ct1 = gadd(ct_1->comp1, c2changed);
+        ct1 = gadd(ct_1->comp1.value, c2changed);
         cipher_text* ct = new cipher_text;
-        ct->comp1 = ct1;
-        ct->comp2 = stoi(0);
+        pari_GEN comp1ret, comp2ret;
+        comp1ret.value = ct1;
+        comp2ret.value = stoi(0);
+        ct->comp1 = comp1ret;
+        ct->comp2 = comp2ret;
         ct->flag = 3;
         return ct;
     }
     else if (ct_1->flag == 1 && ct_2->flag == 3){
-        GEN q = params->q;
-        GEN p = params->p;
+        GEN q = params->q.value;
+        GEN p = params->p.value;
         int lambda = params->lambda;
         int l = params->l;
         int s = params->s;
@@ -606,108 +708,132 @@ cipher_text* addition(cipher_text* ct_1, cipher_text* ct_2, parameters* params, 
         for(int i = 1; i <= nplusl; i++){
             for(int j=1; j<=1; j++){
                 if(i<=n){
-                    gel(gel(c1changed, i), j) = gel(gel(ct_1->comp1, i), j);
+                    gel(gel(c1changed, i), j) = gel(gel(ct_1->comp1.value, i), j);
                     
                 }
                 else{
-                    gel(gel(c1changed, i), j) = gel(gel(ct_1->comp2, i-n), j);
+                    gel(gel(c1changed, i), j) = gel(gel(ct_1->comp2.value, i-n), j);
                 }
             }
         }
         
         GEN ct1, ct2;
-        ct1 = gadd(ct_2->comp1, c1changed);
+        ct1 = gadd(ct_2->comp1.value, c1changed);
         cipher_text* ct = new cipher_text;
-        ct->comp1 = ct1;
-        ct->comp2 = stoi(0);
+        pari_GEN comp1ret, comp2ret;
+        comp1ret.value = ct1;
+        comp2ret.value = stoi(0);
+        ct->comp1 = comp1ret;
+        ct->comp2 = comp2ret;
         ct->flag = 3;
         return ct;
     }
     else{
         GEN ct1, ct2;
-        ct1 = gadd(ct_1->comp1, ct_2->comp1);
-        ct2 = gadd(ct_1->comp2, ct_2->comp2);
+        ct1 = gadd(ct_1->comp1.value, ct_2->comp1.value);
+        ct2 = gadd(ct_1->comp2.value, ct_2->comp2.value);
         cipher_text* ct = new cipher_text;
-        ct->comp1 = ct1;
-        ct->comp2 = ct2;
+        pari_GEN comp1ret, comp2ret;
+        comp1ret.value = ct1;
+        comp2ret.value = ct2;
+        ct->comp1 = comp1ret;
+        ct->comp2 = comp2ret;
         return ct;
     }
 }
 
 cipher_text* subtraction(cipher_text* ct_1, cipher_text* ct_2, parameters* params, public_key_pack* pk, globalvars* g){
     if (ct_1->flag == 1 && ct_2->flag == 2){
-        GEN messagemat = create_message_matrix_repeated_input(1, params->l);
+        pari_GEN messagemat = create_message_matrix_repeated_input(1, params->l);
         cipher_text* one_enc = encrypt_outside_class(messagemat, pk, params, g);
         
         cipher_text* newct = multiplication(one_enc, ct_1, params);
         GEN ct1, ct2;
-        ct1 = gsub(newct->comp1, ct_2->comp1);
+        ct1 = gsub(newct->comp1.value, ct_2->comp1.value);
         cipher_text* ct = new cipher_text;
-        ct->comp1 = ct1;
-        ct->comp2 = stoi(0);
+        pari_GEN comp1ret, comp2ret;
+        comp1ret.value = ct1;
+        comp2ret.value = stoi(0);
+        ct->comp1 = comp1ret;
+        ct->comp2 = comp2ret;
         ct->flag = 2;
         return ct;
     }
     else if (ct_1->flag == 2 && ct_2->flag == 1){
-        GEN messagemat = create_message_matrix_repeated_input(1, params->l);
+        pari_GEN messagemat = create_message_matrix_repeated_input(1, params->l);
         cipher_text* one_enc = encrypt_outside_class(messagemat, pk, params, g);
         
         cipher_text* newct = multiplication(one_enc, ct_2, params);
         GEN ct1, ct2;
-        ct1 = gsub(ct_1->comp1, newct->comp1);
+        ct1 = gsub(ct_1->comp1.value, newct->comp1.value);
         cipher_text* ct = new cipher_text;
-        ct->comp1 = ct1;
-        ct->comp2 = stoi(0);
+        pari_GEN comp1ret, comp2ret;
+        comp1ret.value = ct1;
+        comp2ret.value = stoi(0);
+        ct->comp1 = comp1ret;
+        ct->comp2 = comp2ret;
         ct->flag = 2;
         return ct;
     }
     else if (ct_1->flag == 3 && ct_2->flag == 2){
-        GEN messagemat = create_message_matrix_repeated_input(1, params->l);
+        pari_GEN messagemat = create_message_matrix_repeated_input(1, params->l);
         cipher_text* one_enc = encrypt_outside_class(messagemat, pk, params, g);
         
         cipher_text* newct = multiplication(one_enc, ct_1, params);
         GEN ct1, ct2;
-        ct1 = gsub(newct->comp1, ct_2->comp1);
+        ct1 = gsub(newct->comp1.value, ct_2->comp1.value);
         cipher_text* ct = new cipher_text;
-        ct->comp1 = ct1;
-        ct->comp2 = stoi(0);
+        pari_GEN comp1ret, comp2ret;
+        comp1ret.value = ct1;
+        comp2ret.value = stoi(0);
+        ct->comp1 = comp1ret;
+        ct->comp2 = comp2ret;
         ct->flag = 2;
         return ct;
     }
     else if (ct_1->flag == 2 && ct_2->flag == 3){
-        GEN messagemat = create_message_matrix_repeated_input(1, params->l);
+        pari_GEN messagemat = create_message_matrix_repeated_input(1, params->l);
         cipher_text* one_enc = encrypt_outside_class(messagemat, pk, params, g);
         
         cipher_text* newct = multiplication(one_enc, ct_2, params);
         GEN ct1, ct2;
-        ct1 = gsub(ct_1->comp1, newct->comp1);
+        ct1 = gsub(ct_1->comp1.value, newct->comp1.value);
         cipher_text* ct = new cipher_text;
-        ct->comp1 = ct1;
-        ct->comp2 = stoi(0);
+        pari_GEN comp1ret, comp2ret;
+        comp1ret.value = ct1;
+        comp2ret.value = stoi(0);
+        ct->comp1 = comp1ret;
+        ct->comp2 = comp2ret;
         ct->flag = 2;
         return ct;
     }
     else if (ct_1->flag == 2 && ct_2->flag == 2){
         GEN ct1, ct2;
-        ct1 = gsub(ct_1->comp1, ct_2->comp1);
+        ct1 = gsub(ct_1->comp1.value, ct_2->comp1.value);
         cipher_text* ct = new cipher_text;
-        ct->comp1 = ct1;
-        ct->comp2 = stoi(0);
+        pari_GEN comp1ret, comp2ret;
+        comp1ret.value = ct1;
+        comp2ret.value = stoi(0);
+        ct->comp1 = comp1ret;
+        ct->comp2 = comp2ret;
         ct->flag = 2;
         return ct;
     }
     else if (ct_1->flag == 3 && ct_2->flag == 3){
         GEN ct1, ct2;
-        ct1 = gsub(ct_1->comp1, ct_2->comp1);
+        ct1 = gsub(ct_1->comp1.value, ct_2->comp1.value);
         cipher_text* ct = new cipher_text;
-        ct->comp1 = ct1;
-        ct->comp2 = stoi(0);
+        pari_GEN comp1ret, comp2ret;
+        comp1ret.value = ct1;
+        comp2ret.value = stoi(0);
+        ct->comp1 = comp1ret;
+        ct->comp2 = comp2ret;
         ct->flag = 3;
         return ct;
     }
     else if (ct_1->flag == 3 && ct_2->flag == 1){
-        GEN q = params->q;
-        GEN p = params->p;
+        GEN q = params->q.value;
+        GEN p = params->p.value;
         int lambda = params->lambda;
         int l = params->l;
         int s = params->s;
@@ -717,26 +843,29 @@ cipher_text* subtraction(cipher_text* ct_1, cipher_text* ct_2, parameters* param
         for(int i = 1; i <= nplusl; i++){
             for(int j=1; j<=1; j++){
                 if(i<=n){
-                    gel(gel(c2changed, i), j) = gel(gel(ct_2->comp1, i), j);
+                    gel(gel(c2changed, i), j) = gel(gel(ct_2->comp1.value, i), j);
                     
                 }
                 else{
-                    gel(gel(c2changed, i), j) = gel(gel(ct_2->comp2, i-n), j);
+                    gel(gel(c2changed, i), j) = gel(gel(ct_2->comp2.value, i-n), j);
                 }
             }
         }
         
         GEN ct1, ct2;
-        ct1 = gsub(ct_1->comp1, c2changed);
+        ct1 = gsub(ct_1->comp1.value, c2changed);
         cipher_text* ct = new cipher_text;
-        ct->comp1 = ct1;
-        ct->comp2 = stoi(0);
+        pari_GEN comp1ret, comp2ret;
+        comp1ret.value = ct1;
+        comp2ret.value = stoi(0);
+        ct->comp1 = comp1ret;
+        ct->comp2 = comp2ret;
         ct->flag = 3;
         return ct;
     }
     else if (ct_1->flag == 1 && ct_2->flag == 3){
-        GEN q = params->q;
-        GEN p = params->p;
+        GEN q = params->q.value;
+        GEN p = params->p.value;
         int lambda = params->lambda;
         int l = params->l;
         int s = params->s;
@@ -746,38 +875,44 @@ cipher_text* subtraction(cipher_text* ct_1, cipher_text* ct_2, parameters* param
         for(int i = 1; i <= nplusl; i++){
             for(int j=1; j<=1; j++){
                 if(i<=n){
-                    gel(gel(c1changed, i), j) = gel(gel(ct_1->comp1, i), j);
+                    gel(gel(c1changed, i), j) = gel(gel(ct_1->comp1.value, i), j);
                     
                 }
                 else{
-                    gel(gel(c1changed, i), j) = gel(gel(ct_1->comp2, i-n), j);
+                    gel(gel(c1changed, i), j) = gel(gel(ct_1->comp2.value, i-n), j);
                 }
             }
         }
         
         GEN ct1, ct2;
-        ct1 = gsub(c1changed, ct_2->comp1);
+        ct1 = gsub(c1changed, ct_2->comp1.value);
         cipher_text* ct = new cipher_text;
-        ct->comp1 = ct1;
-        ct->comp2 = stoi(0);
+        pari_GEN comp1ret, comp2ret;
+        comp1ret.value = ct1;
+        comp2ret.value = stoi(0);
+        ct->comp1 = comp1ret;
+        ct->comp2 = comp2ret;
         ct->flag = 3;
         return ct;
     }
     else{
         GEN ct1, ct2;
-        ct1 = gsub(ct_1->comp1, ct_2->comp1);
-        ct2 = gsub(ct_1->comp2, ct_2->comp2);
+        ct1 = gsub(ct_1->comp1.value, ct_2->comp1.value);
+        ct2 = gsub(ct_1->comp2.value, ct_2->comp2.value);
         cipher_text* ct = new cipher_text;
-        ct->comp1 = ct1;
-        ct->comp2 = ct2;
+        pari_GEN comp1ret, comp2ret;
+        comp1ret.value = ct1;
+        comp2ret.value = ct2;
+        ct->comp1 = comp1ret;
+        ct->comp2 = comp2ret;
         return ct;
     }
 }
 
 
 cipher_text* multiplication(cipher_text* ct_1, cipher_text* ct_2, parameters* params){
-    GEN q = params->q;
-    GEN p = params->p;
+    GEN q = params->q.value;
+    GEN p = params->p.value;
     int lambda = params->lambda;
     int l = params->l;
     int s = params->s;
@@ -785,49 +920,55 @@ cipher_text* multiplication(cipher_text* ct_1, cipher_text* ct_2, parameters* pa
     int nplusl = n+l;
     
     if (ct_1->flag == 3 && ct_2->flag == 3){
-        GEN cbeforemul = ct_1->comp1;
-        GEN c_1beforemul = ct_2->comp1;
+        GEN cbeforemul = ct_1->comp1.value;
+        GEN c_1beforemul = ct_2->comp1.value;
         
         GEN cmul = RgM_transmul(cbeforemul, c_1beforemul);
         cipher_text* ret = new cipher_text;
-        ret->comp1 = cmul;
-        ret->comp2 = stoi(0);
+        pari_GEN comp1ret, comp2ret;
+        comp1ret.value = cmul;
+        comp2ret.value = stoi(0);
+        ret->comp1 = comp1ret;
+        ret->comp2 = comp2ret;
         ret->flag = 2;
         return ret;
     }
     else if (ct_1->flag == 3 && ct_2->flag == 1){
-        GEN cbeforemul = ct_1->comp1;
+        GEN cbeforemul = ct_1->comp1.value;
         GEN c_1beforemul = zeromatcopy(1, nplusl);
         for(int i = 1; i <= nplusl; i++){
             for(int j=1; j<=1; j++){
                 if(i<=n){
-                    gel(gel(c_1beforemul, i), j) = gel(gel(ct_2->comp1, i), j);
+                    gel(gel(c_1beforemul, i), j) = gel(gel(ct_2->comp1.value, i), j);
                     
                 }
                 else{
-                    gel(gel(c_1beforemul, i), j) = gel(gel(ct_2->comp2, i-n), j);
+                    gel(gel(c_1beforemul, i), j) = gel(gel(ct_2->comp2.value, i-n), j);
                 }
             }
         }
         
         GEN cmul = RgM_transmul(cbeforemul, c_1beforemul);
         cipher_text* ret = new cipher_text;
-        ret->comp1 = cmul;
-        ret->comp2 = stoi(0);
+        pari_GEN comp1ret, comp2ret;
+        comp1ret.value = cmul;
+        comp2ret.value = stoi(0);
+        ret->comp1 = comp1ret;
+        ret->comp2 = comp2ret;
         ret->flag = 2;
         return ret;
     }
     else if (ct_1->flag == 1 && ct_2->flag == 3){
         GEN cbeforemul = zeromatcopy(1, nplusl);
-        GEN c_1beforemul = ct_2->comp1;
+        GEN c_1beforemul = ct_2->comp1.value;
         for(int i = 1; i <= nplusl; i++){
             for(int j=1; j<=1; j++){
                 if(i<=n){
-                    gel(gel(cbeforemul, i), j) = gel(gel(ct_1->comp1, i), j);
+                    gel(gel(cbeforemul, i), j) = gel(gel(ct_1->comp1.value, i), j);
                     
                 }
                 else{
-                    gel(gel(cbeforemul, i), j) = gel(gel(ct_1->comp2, i-n), j);
+                    gel(gel(cbeforemul, i), j) = gel(gel(ct_1->comp2.value, i-n), j);
                     
                 }
             }
@@ -835,8 +976,11 @@ cipher_text* multiplication(cipher_text* ct_1, cipher_text* ct_2, parameters* pa
         
         GEN cmul = RgM_transmul(cbeforemul, c_1beforemul);
         cipher_text* ret = new cipher_text;
-        ret->comp1 = cmul;
-        ret->comp2 = stoi(0);
+        pari_GEN comp1ret, comp2ret;
+        comp1ret.value = cmul;
+        comp2ret.value = stoi(0);
+        ret->comp1 = comp1ret;
+        ret->comp2 = comp2ret;
         ret->flag = 2;
         return ret;
     }
@@ -846,43 +990,50 @@ cipher_text* multiplication(cipher_text* ct_1, cipher_text* ct_2, parameters* pa
         for(int i = 1; i <= nplusl; i++){
             for(int j=1; j<=1; j++){
                 if(i<=n){
-                    gel(gel(cbeforemul, i), j) = gel(gel(ct_1->comp1, i), j);
-                    gel(gel(c_1beforemul, i), j) = gel(gel(ct_2->comp1, i), j);
+                    gel(gel(cbeforemul, i), j) = gel(gel(ct_1->comp1.value, i), j);
+                    gel(gel(c_1beforemul, i), j) = gel(gel(ct_2->comp1.value, i), j);
                     
                 }
                 else{
-                    gel(gel(cbeforemul, i), j) = gel(gel(ct_1->comp2, i-n), j);
-                    gel(gel(c_1beforemul, i), j) = gel(gel(ct_2->comp2, i-n), j);
+                    gel(gel(cbeforemul, i), j) = gel(gel(ct_1->comp2.value, i-n), j);
+                    gel(gel(c_1beforemul, i), j) = gel(gel(ct_2->comp2.value, i-n), j);
                 }
             }
         }
         
         GEN cmul = RgM_transmul(cbeforemul, c_1beforemul);
         cipher_text* ret = new cipher_text;
-        ret->comp1 = cmul;
-        ret->comp2 = stoi(0);
+        pari_GEN comp1ret, comp2ret;
+        comp1ret.value = cmul;
+        comp2ret.value = stoi(0);
+        ret->comp1 = comp1ret;
+        ret->comp2 = comp2ret;
         ret->flag = 2;
         return ret;
     }
 }
 
-GEN create_message_matrix(int message, int l){
+pari_GEN create_message_matrix(int message, int l){
     GEN m = zeromatcopy(1, l);
     gel(gel(m, 1), 1) = stoi(message);
-    return m;
+    pari_GEN ret;
+    ret.value = m;
+    return ret;
 }
 
-GEN create_message_matrix_repeated_input(int message, int l){
+pari_GEN create_message_matrix_repeated_input(int message, int l){
     GEN m = zeromatcopy(1, l);
     for(int i = 1; i <= l; i++){
         for(int j=1; j<=1; j++){
             gel(gel(m, i), j) = stoi(message);
         }
     }
-    return m;
+    pari_GEN ret;
+    ret.value = m;
+    return ret;
 }
 
-GEN create_message_matrix(int* message, int l){
+pari_GEN create_message_matrix(int* message, int l){
     GEN m = zeromatcopy(1, l);
     for(int i = 1; i <= l; i++){
         for(int j=1; j<=1; j++){
@@ -893,14 +1044,16 @@ GEN create_message_matrix(int* message, int l){
                 gel(gel(m, i), j) = stoi(message[i-1]);
         }
     }
-    return m;
+    pari_GEN ret;
+    ret.value = m;
+    return ret;
 }
 
 GEN see_ciphertext(cipher_text* c, int index){
     if(index == 0)
-        return c->comp1;
+        return c->comp1.value;
     else
-        return c->comp2;
+        return c->comp2.value;
 }
 
 GEN power2(GEN x, int n, int kappa, int l, GEN q){
@@ -971,6 +1124,17 @@ parameters* get_updation_parameters(parameters* params_old, int n, int s){
     params->sigma = params_old->sigma;
     return params;
 
+}
+
+cipher_text* plaintext_multiplication(cipher_text* ct, pari_GEN input){
+    cipher_text* ret = new cipher_text;
+    pari_GEN comp1ret, comp2ret;
+    comp1ret.value = gmul(ct->comp1.value, input.value);
+    comp2ret.value = gmul(ct->comp2.value, input.value);
+    ret->comp1 = comp1ret;
+    ret->comp2 = comp2ret;
+    ret->flag = ct->flag;
+    return ret;
 }
 
 

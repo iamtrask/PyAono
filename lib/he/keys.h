@@ -2,34 +2,34 @@
 
 class secret_key{
 private:
-    GEN sk;
+    pari_GEN sk;
     
 public:
     parameters* params;
     
     secret_key(){};
     
-    secret_key(GEN sk, parameters* params){
+    secret_key(pari_GEN sk, parameters* params){
         this->sk = sk;
         this->params = params;
     }
     
-    void initialize(GEN sk, parameters* params){
+    void initialize(pari_GEN sk, parameters* params){
         this->sk = sk;
         this->params = params;
     }
     
-    GEN decrypt(cipher_text* ct){
+    pari_GEN decrypt(cipher_text* ct){
         GEN m;
         if(ct->flag==1)
-            m = lift(gmodulo(lift(gadd(gmul(ct->comp1, sk), ct->comp2)), this->params->p));
+            m = lift(gmodulo(lift(gadd(gmul(ct->comp1.value, sk.value), ct->comp2.value)), this->params->p.value));
         else if(ct->flag==2){
             GEN SIMatrix = zeromatcopy(params->n+params->l, params->l);
             GEN I = matid(params->l);
             for(int i = 1; i <= params->l; i++){
                 for(int j=1; j<=params->l+params->n; j++){
                     if(j<=params->n){
-                        gel(gel(SIMatrix, i), j) = gel(gel(sk, i), j);
+                        gel(gel(SIMatrix, i), j) = gel(gel(sk.value, i), j);
                         
                     }
                     else{
@@ -38,7 +38,8 @@ public:
                 }
             }
             
-            m = lift(gmodulo(lift(gmul(RgM_transmul(SIMatrix, ct->comp1), SIMatrix)), params->p));
+            m = lift(gmodulo(lift(gmul(RgM_transmul(SIMatrix, ct->comp1.value), SIMatrix)), params->p.value));
+            
         }
         else{
             GEN SIMatrix = zeromatcopy(params->n+params->l, params->l);
@@ -46,7 +47,7 @@ public:
             for(int i = 1; i <= params->l; i++){
                 for(int j=1; j<=params->l+params->n; j++){
                     if(j<=params->n){
-                        gel(gel(SIMatrix, i), j) = gel(gel(sk, i), j);
+                        gel(gel(SIMatrix, i), j) = gel(gel(sk.value, i), j);
                         
                     }
                     else{
@@ -54,9 +55,11 @@ public:
                     }
                 }
             }
-            m = lift(gmodulo(lift(gmul(ct->comp1, SIMatrix)), params->p));
+            m = lift(gmodulo(lift(gmul(ct->comp1.value, SIMatrix)), params->p.value));
         }
-        return m;
+        pari_GEN mret;
+        mret.value = m;
+        return mret;
     }
     
     void serialize(){
@@ -89,7 +92,7 @@ public:
         this->g = g;
     }
     
-    cipher_text* encrypt(GEN m){
+    cipher_text* encrypt(pari_GEN m){
         GEN e1 = zeromatcopy(1, params->n);
         GEN e2 = zeromatcopy(1, params->n);
         GEN e3 = zeromatcopy(1, params->l);
@@ -105,9 +108,9 @@ public:
                 gel(gel(e3, i), j) = lift(gmodulo(stoi(SampleKnuthYao(0, params, g)), stoi(params->s)));
             }
         }
-        GEN c1, c2;
-        c1 = gadd(RgM_mul(e1, pk->A), gmul(params->p, e2));
-        c2 = gadd(gadd(RgM_mul(e1, pk->P), gmul(params->p, e3)), m);
+        pari_GEN c1, c2;
+        c1.value = gadd(RgM_mul(e1, pk->A.value), gmul(params->p.value, e2));
+        c2.value = gadd(gadd(RgM_mul(e1, pk->P.value), gmul(params->p.value, e3)), m.value);
         cipher_text* ct = new cipher_text;
         ct->comp1 = c1;
         ct->comp2 = c2;
@@ -137,9 +140,9 @@ public:
     key_pair generate_key(int lambda, int l, int n, int s, int sigma, int degree_p){
         key_pair keys;
         parameters* params = new parameters;
-        
-        GEN q = nextprime(gpowgs(stoi(2), lambda));
-        GEN p = gadd(gpowgs(stoi(2), degree_p), stoi(1));
+        pari_GEN p, q;
+        q.value = nextprime(gpowgs(stoi(2), lambda));
+        p.value = gadd(gpowgs(stoi(2), degree_p), stoi(1));
         params->p = p;
         params->q = q;
         params->lambda = lambda;
@@ -150,7 +153,7 @@ public:
         
         globalvars* g = initialize_sampler(params);
         
-        GEN temp = generate_secret_key(params, g);
+        pari_GEN temp = generate_secret_key(params, g);
         keys.sk.initialize(temp, params);
         public_key_pack* temp1 = generate_public_key(temp, params, g);
         keys.pk.initialize(temp1, params, g);
