@@ -3404,7 +3404,7 @@ SWIGINTERNINLINE PyObject*
   return PyInt_FromLong((long) value);
 }
 
-SWIGINTERN ciphertext *new_ciphertext__SWIG_5(PyObject *int_list,public_key *pk,parameters *params){
+SWIGINTERN ciphertext *new_ciphertext__SWIG_5(PyObject *int_list,public_key *pk){
         ciphertext* result = new ciphertext();
         int *array = NULL;
         int nInts;
@@ -3422,19 +3422,23 @@ SWIGINTERN ciphertext *new_ciphertext__SWIG_5(PyObject *int_list,public_key *pk,
         pt.value = cgetg(nInts + 1, t_VEC);
         for(int i = 0; i < nInts; i++)
             gel(pt.value, i + 1) = stoi(array[i]);
-        result->packing_method(pt, pk, params);
+        result->packing_method(pt, pk);
         return result;
     }
 SWIGINTERN ciphertext ciphertext___mul____SWIG_2(ciphertext *self,int const pt){
         ciphertext result;
         pari_GEN pt_GEN(pt);
         result.value = plaintext_multiplication(self->value, pt_GEN);
+        result.params = self->params;
+        result.pk = self->pk;
         return result;
     }
 SWIGINTERN ciphertext ciphertext___rmul__(ciphertext *self,int const pt){
         ciphertext result;
         pari_GEN pt_GEN(pt);
         result.value = plaintext_multiplication(self->value, pt_GEN);
+        result.params = self->params;
+        result.pk = self->pk;
         return result;
     }
 
@@ -3449,24 +3453,58 @@ SWIGINTERNINLINE PyObject*
 
 SWIGINTERN pari_GEN *new_pari_GEN__SWIG_2(PyObject *int_list){
         pari_GEN* result = new pari_GEN();
-        int *array = NULL;
-        int nInts;
-        if (PyList_Check( int_list ))
-        {
-            nInts = PyList_Size( int_list );
-            array = (int*) malloc( nInts * sizeof(int) );
-            for ( int ii = 0; ii < nInts; ii++ ){
-                PyObject *oo = PyList_GetItem( int_list, ii);
-                if ( PyInt_Check( oo ) )
-                    array[ ii ] = ( int ) PyInt_AsLong( oo );
+        if(PyList_Size(PyList_GetItem( int_list, 0)) == -1){
+            int *array = NULL;
+            int nInts;
+            if (PyList_Check( int_list ))
+            {
+                nInts = PyList_Size( int_list );
+                array = (int*) malloc( nInts * sizeof(int) );
+                for ( int ii = 0; ii < nInts; ii++ ){
+                    PyObject *oo = PyList_GetItem( int_list, ii);
+                    if ( PyInt_Check( oo ) )
+                        array[ ii ] = ( int ) PyInt_AsLong( oo );
+                }
             }
+            GEN x;
+            x = cgetg(nInts + 1, t_VEC);
+            for(int i = 0; i < nInts; i++)
+                gel(x, i + 1) = stoi(array[i]);
+            result->initialize(x);
+            return result;
         }
-        GEN x;
-        x = cgetg(nInts + 1, t_VEC);
-        for(int i = 0; i < nInts; i++)
-            gel(x, i + 1) = stoi(array[i]);
-        result->initialize(x);
-        return result;
+        else{
+            int *array = NULL;
+            int **arrofarray = NULL;
+            int nInts;
+            int nOutInts;
+            if (PyList_Check( int_list ))
+            {
+                nOutInts = PyList_Size( int_list );
+                arrofarray = (int**) malloc( nOutInts * sizeof(int*) );
+                for ( int jj = 0; jj < nOutInts; jj++ ){
+                    nInts = PyList_Size(PyList_GetItem( int_list, jj) );
+                    array = (int*) malloc( nInts * sizeof(int) );
+                    for ( int ii = 0; ii < nInts; ii++ ){
+                        PyObject *oo = PyList_GetItem(PyList_GetItem( int_list, jj), ii);
+                        if ( PyInt_Check( oo ) ){
+                            array[ ii ] = ( int ) PyInt_AsLong( oo );
+                        }
+            
+                    }
+                    arrofarray[jj] = array;
+                }
+            }
+            GEN x;
+            x = zeromatcopy(nOutInts, nInts);
+            for(int j = 0; j < nOutInts; j++){
+                for(int i = 0; i < nInts; i++)
+                gel(gel(x, i + 1), j + 1) = stoi(arrofarray[j][i]);
+            }
+            result->initialize(x);
+            return result;
+        }
+        
     }
 SWIGINTERN char *pari_GEN___str__(pari_GEN *self){
         return GENtostr(self->value);
@@ -3525,11 +3563,22 @@ SWIGINTERN pari_GEN pari_GEN___getitem__(pari_GEN *self,int key){
         result.value = gel(self->value, key + 1);
         return result;
     }
-SWIGINTERN pari_GEN pari_GEN_sub_mat_array(pari_GEN *self,int key_1,int key_2){
+SWIGINTERN pari_GEN pari_GEN_sub_mat_array__SWIG_0(pari_GEN *self,int key_1,int key_2){
         pari_GEN result;
         result.value = cgetg(key_2 - key_1 + 1, t_VEC);
+        int cnt = 0;
         for(int i = key_1; i < key_2; i++)
-        gel(result.value, i + 1) = gel(gel(self->value, i + 1), 1);
+            gel(result.value, 1+cnt++) = gel(gel(self->value, i + 1), 1);
+        return result;
+    }
+SWIGINTERN pari_GEN pari_GEN_sub_mat_array__SWIG_1(pari_GEN *self,int row_1,int row_2,int col_1,int col_2){
+        pari_GEN result;
+        result.value = zeromatcopy(row_2 - row_1, col_2 - col_1);
+        for(int j = col_1; j < col_2; j++){
+            for(int i = row_1; i < row_2; i++){
+                gel(gel(result.value, 1+(j-col_1)), 1+(i-row_1)) = gel(gel(self->value, j + 1), i + 1);
+            }
+        }
         return result;
     }
 SWIGINTERN pari_GEN pari_GEN_sub_array(pari_GEN *self,int key_1,int key_2){
@@ -4024,27 +4073,18 @@ fail:
 SWIGINTERN PyObject *_wrap_new_ciphertext__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   public_key *arg1 = (public_key *) 0 ;
-  parameters *arg2 = (parameters *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
   PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
   ciphertext *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_ciphertext",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_ciphertext",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_public_key, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_ciphertext" "', argument " "1"" of type '" "public_key *""'"); 
   }
   arg1 = reinterpret_cast< public_key * >(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_parameters, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_ciphertext" "', argument " "2"" of type '" "parameters *""'"); 
-  }
-  arg2 = reinterpret_cast< parameters * >(argp2);
-  result = (ciphertext *)new ciphertext(arg1,arg2);
+  result = (ciphertext *)new ciphertext(arg1);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ciphertext, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -4056,19 +4096,15 @@ SWIGINTERN PyObject *_wrap_new_ciphertext__SWIG_2(PyObject *SWIGUNUSEDPARM(self)
   PyObject *resultobj = 0;
   pari_GEN arg1 ;
   public_key *arg2 = (public_key *) 0 ;
-  parameters *arg3 = (parameters *) 0 ;
   void *argp1 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
   int res2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
   ciphertext *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOO:new_ciphertext",&obj0,&obj1,&obj2)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_ciphertext",&obj0,&obj1)) SWIG_fail;
   {
     res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_pari_GEN,  0  | 0);
     if (!SWIG_IsOK(res1)) {
@@ -4087,12 +4123,7 @@ SWIGINTERN PyObject *_wrap_new_ciphertext__SWIG_2(PyObject *SWIGUNUSEDPARM(self)
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_ciphertext" "', argument " "2"" of type '" "public_key *""'"); 
   }
   arg2 = reinterpret_cast< public_key * >(argp2);
-  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_parameters, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "new_ciphertext" "', argument " "3"" of type '" "parameters *""'"); 
-  }
-  arg3 = reinterpret_cast< parameters * >(argp3);
-  result = (ciphertext *)new ciphertext(arg1,arg2,arg3);
+  result = (ciphertext *)new ciphertext(arg1,arg2);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ciphertext, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -4104,19 +4135,15 @@ SWIGINTERN PyObject *_wrap_new_ciphertext__SWIG_3(PyObject *SWIGUNUSEDPARM(self)
   PyObject *resultobj = 0;
   int arg1 ;
   public_key *arg2 = (public_key *) 0 ;
-  parameters *arg3 = (parameters *) 0 ;
   int val1 ;
   int ecode1 = 0 ;
   void *argp2 = 0 ;
   int res2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
   ciphertext *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOO:new_ciphertext",&obj0,&obj1,&obj2)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_ciphertext",&obj0,&obj1)) SWIG_fail;
   ecode1 = SWIG_AsVal_int(obj0, &val1);
   if (!SWIG_IsOK(ecode1)) {
     SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_ciphertext" "', argument " "1"" of type '" "int""'");
@@ -4127,12 +4154,7 @@ SWIGINTERN PyObject *_wrap_new_ciphertext__SWIG_3(PyObject *SWIGUNUSEDPARM(self)
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_ciphertext" "', argument " "2"" of type '" "public_key *""'"); 
   }
   arg2 = reinterpret_cast< public_key * >(argp2);
-  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_parameters, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "new_ciphertext" "', argument " "3"" of type '" "parameters *""'"); 
-  }
-  arg3 = reinterpret_cast< parameters * >(argp3);
-  result = (ciphertext *)new ciphertext(arg1,arg2,arg3);
+  result = (ciphertext *)new ciphertext(arg1,arg2);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ciphertext, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -4144,19 +4166,15 @@ SWIGINTERN PyObject *_wrap_new_ciphertext__SWIG_4(PyObject *SWIGUNUSEDPARM(self)
   PyObject *resultobj = 0;
   cipher_text *arg1 = (cipher_text *) 0 ;
   public_key *arg2 = (public_key *) 0 ;
-  parameters *arg3 = (parameters *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
   int res2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
   ciphertext *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOO:new_ciphertext",&obj0,&obj1,&obj2)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_ciphertext",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_cipher_text, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_ciphertext" "', argument " "1"" of type '" "cipher_text *""'"); 
@@ -4167,12 +4185,7 @@ SWIGINTERN PyObject *_wrap_new_ciphertext__SWIG_4(PyObject *SWIGUNUSEDPARM(self)
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_ciphertext" "', argument " "2"" of type '" "public_key *""'"); 
   }
   arg2 = reinterpret_cast< public_key * >(argp2);
-  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_parameters, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "new_ciphertext" "', argument " "3"" of type '" "parameters *""'"); 
-  }
-  arg3 = reinterpret_cast< parameters * >(argp3);
-  result = (ciphertext *)new ciphertext(arg1,arg2,arg3);
+  result = (ciphertext *)new ciphertext(arg1,arg2);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ciphertext, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -4185,21 +4198,17 @@ SWIGINTERN PyObject *_wrap_ciphertext_packing_method(PyObject *SWIGUNUSEDPARM(se
   ciphertext *arg1 = (ciphertext *) 0 ;
   pari_GEN arg2 ;
   public_key *arg3 = (public_key *) 0 ;
-  parameters *arg4 = (parameters *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 ;
   int res2 = 0 ;
   void *argp3 = 0 ;
   int res3 = 0 ;
-  void *argp4 = 0 ;
-  int res4 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   PyObject * obj2 = 0 ;
-  PyObject * obj3 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOOO:ciphertext_packing_method",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OOO:ciphertext_packing_method",&obj0,&obj1,&obj2)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ciphertext, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ciphertext_packing_method" "', argument " "1"" of type '" "ciphertext *""'"); 
@@ -4223,12 +4232,7 @@ SWIGINTERN PyObject *_wrap_ciphertext_packing_method(PyObject *SWIGUNUSEDPARM(se
     SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ciphertext_packing_method" "', argument " "3"" of type '" "public_key *""'"); 
   }
   arg3 = reinterpret_cast< public_key * >(argp3);
-  res4 = SWIG_ConvertPtr(obj3, &argp4,SWIGTYPE_p_parameters, 0 |  0 );
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "ciphertext_packing_method" "', argument " "4"" of type '" "parameters *""'"); 
-  }
-  arg4 = reinterpret_cast< parameters * >(argp4);
-  (arg1)->packing_method(arg2,arg3,arg4);
+  (arg1)->packing_method(arg2,arg3);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -4241,21 +4245,17 @@ SWIGINTERN PyObject *_wrap_ciphertext_initialize__SWIG_0(PyObject *SWIGUNUSEDPAR
   ciphertext *arg1 = (ciphertext *) 0 ;
   pari_GEN arg2 ;
   public_key *arg3 = (public_key *) 0 ;
-  parameters *arg4 = (parameters *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 ;
   int res2 = 0 ;
   void *argp3 = 0 ;
   int res3 = 0 ;
-  void *argp4 = 0 ;
-  int res4 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   PyObject * obj2 = 0 ;
-  PyObject * obj3 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOOO:ciphertext_initialize",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OOO:ciphertext_initialize",&obj0,&obj1,&obj2)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ciphertext, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ciphertext_initialize" "', argument " "1"" of type '" "ciphertext *""'"); 
@@ -4279,12 +4279,7 @@ SWIGINTERN PyObject *_wrap_ciphertext_initialize__SWIG_0(PyObject *SWIGUNUSEDPAR
     SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ciphertext_initialize" "', argument " "3"" of type '" "public_key *""'"); 
   }
   arg3 = reinterpret_cast< public_key * >(argp3);
-  res4 = SWIG_ConvertPtr(obj3, &argp4,SWIGTYPE_p_parameters, 0 |  0 );
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "ciphertext_initialize" "', argument " "4"" of type '" "parameters *""'"); 
-  }
-  arg4 = reinterpret_cast< parameters * >(argp4);
-  (arg1)->initialize(arg2,arg3,arg4);
+  (arg1)->initialize(arg2,arg3);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -4296,18 +4291,14 @@ SWIGINTERN PyObject *_wrap_ciphertext_initialize__SWIG_1(PyObject *SWIGUNUSEDPAR
   PyObject *resultobj = 0;
   ciphertext *arg1 = (ciphertext *) 0 ;
   public_key *arg2 = (public_key *) 0 ;
-  parameters *arg3 = (parameters *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
   int res2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOO:ciphertext_initialize",&obj0,&obj1,&obj2)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:ciphertext_initialize",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ciphertext, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ciphertext_initialize" "', argument " "1"" of type '" "ciphertext *""'"); 
@@ -4318,12 +4309,7 @@ SWIGINTERN PyObject *_wrap_ciphertext_initialize__SWIG_1(PyObject *SWIGUNUSEDPAR
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ciphertext_initialize" "', argument " "2"" of type '" "public_key *""'"); 
   }
   arg2 = reinterpret_cast< public_key * >(argp2);
-  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_parameters, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ciphertext_initialize" "', argument " "3"" of type '" "parameters *""'"); 
-  }
-  arg3 = reinterpret_cast< parameters * >(argp3);
-  (arg1)->initialize(arg2,arg3);
+  (arg1)->initialize(arg2);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -4333,17 +4319,17 @@ fail:
 
 SWIGINTERN PyObject *_wrap_ciphertext_initialize(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
-  PyObject *argv[5] = {
+  PyObject *argv[4] = {
     0
   };
   Py_ssize_t ii;
   
   if (!PyTuple_Check(args)) SWIG_fail;
   argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 4) && (ii < argc); ii++) {
+  for (ii = 0; (ii < 3) && (ii < argc); ii++) {
     argv[ii] = PyTuple_GET_ITEM(args,ii);
   }
-  if (argc == 3) {
+  if (argc == 2) {
     int _v;
     void *vptr = 0;
     int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ciphertext, 0);
@@ -4353,16 +4339,11 @@ SWIGINTERN PyObject *_wrap_ciphertext_initialize(PyObject *self, PyObject *args)
       int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_public_key, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        void *vptr = 0;
-        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_parameters, 0);
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_ciphertext_initialize__SWIG_1(self, args);
-        }
+        return _wrap_ciphertext_initialize__SWIG_1(self, args);
       }
     }
   }
-  if (argc == 4) {
+  if (argc == 3) {
     int _v;
     void *vptr = 0;
     int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ciphertext, 0);
@@ -4375,12 +4356,7 @@ SWIGINTERN PyObject *_wrap_ciphertext_initialize(PyObject *self, PyObject *args)
         int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_public_key, 0);
         _v = SWIG_CheckState(res);
         if (_v) {
-          void *vptr = 0;
-          int res = SWIG_ConvertPtr(argv[3], &vptr, SWIGTYPE_p_parameters, 0);
-          _v = SWIG_CheckState(res);
-          if (_v) {
-            return _wrap_ciphertext_initialize__SWIG_0(self, args);
-          }
+          return _wrap_ciphertext_initialize__SWIG_0(self, args);
         }
       }
     }
@@ -4389,8 +4365,8 @@ SWIGINTERN PyObject *_wrap_ciphertext_initialize(PyObject *self, PyObject *args)
 fail:
   SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'ciphertext_initialize'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    ciphertext::initialize(pari_GEN,public_key *,parameters *)\n"
-    "    ciphertext::initialize(public_key *,parameters *)\n");
+    "    ciphertext::initialize(pari_GEN,public_key *)\n"
+    "    ciphertext::initialize(public_key *)\n");
   return 0;
 }
 
@@ -4571,29 +4547,20 @@ SWIGINTERN PyObject *_wrap_new_ciphertext__SWIG_5(PyObject *SWIGUNUSEDPARM(self)
   PyObject *resultobj = 0;
   PyObject *arg1 = (PyObject *) 0 ;
   public_key *arg2 = (public_key *) 0 ;
-  parameters *arg3 = (parameters *) 0 ;
   void *argp2 = 0 ;
   int res2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
   ciphertext *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOO:new_ciphertext",&obj0,&obj1,&obj2)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_ciphertext",&obj0,&obj1)) SWIG_fail;
   arg1 = obj0;
   res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_public_key, 0 |  0 );
   if (!SWIG_IsOK(res2)) {
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_ciphertext" "', argument " "2"" of type '" "public_key *""'"); 
   }
   arg2 = reinterpret_cast< public_key * >(argp2);
-  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_parameters, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "new_ciphertext" "', argument " "3"" of type '" "parameters *""'"); 
-  }
-  arg3 = reinterpret_cast< parameters * >(argp3);
-  result = (ciphertext *)new_ciphertext__SWIG_5(arg1,arg2,arg3);
+  result = (ciphertext *)new_ciphertext__SWIG_5(arg1,arg2);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_ciphertext, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -4603,34 +4570,29 @@ fail:
 
 SWIGINTERN PyObject *_wrap_new_ciphertext(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
-  PyObject *argv[4] = {
+  PyObject *argv[3] = {
     0
   };
   Py_ssize_t ii;
   
   if (!PyTuple_Check(args)) SWIG_fail;
   argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 3) && (ii < argc); ii++) {
+  for (ii = 0; (ii < 2) && (ii < argc); ii++) {
     argv[ii] = PyTuple_GET_ITEM(args,ii);
   }
   if (argc == 0) {
     return _wrap_new_ciphertext__SWIG_0(self, args);
   }
-  if (argc == 2) {
+  if (argc == 1) {
     int _v;
     void *vptr = 0;
     int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_public_key, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      void *vptr = 0;
-      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_parameters, 0);
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_new_ciphertext__SWIG_1(self, args);
-      }
+      return _wrap_new_ciphertext__SWIG_1(self, args);
     }
   }
-  if (argc == 3) {
+  if (argc == 2) {
     int _v;
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_pari_GEN, 0);
     _v = SWIG_CheckState(res);
@@ -4639,16 +4601,11 @@ SWIGINTERN PyObject *_wrap_new_ciphertext(PyObject *self, PyObject *args) {
       int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_public_key, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        void *vptr = 0;
-        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_parameters, 0);
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_new_ciphertext__SWIG_2(self, args);
-        }
+        return _wrap_new_ciphertext__SWIG_2(self, args);
       }
     }
   }
-  if (argc == 3) {
+  if (argc == 2) {
     int _v;
     void *vptr = 0;
     int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_cipher_text, 0);
@@ -4658,16 +4615,11 @@ SWIGINTERN PyObject *_wrap_new_ciphertext(PyObject *self, PyObject *args) {
       int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_public_key, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        void *vptr = 0;
-        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_parameters, 0);
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_new_ciphertext__SWIG_4(self, args);
-        }
+        return _wrap_new_ciphertext__SWIG_4(self, args);
       }
     }
   }
-  if (argc == 3) {
+  if (argc == 2) {
     int _v;
     {
       int res = SWIG_AsVal_int(argv[0], NULL);
@@ -4678,16 +4630,11 @@ SWIGINTERN PyObject *_wrap_new_ciphertext(PyObject *self, PyObject *args) {
       int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_public_key, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        void *vptr = 0;
-        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_parameters, 0);
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_new_ciphertext__SWIG_3(self, args);
-        }
+        return _wrap_new_ciphertext__SWIG_3(self, args);
       }
     }
   }
-  if (argc == 3) {
+  if (argc == 2) {
     int _v;
     _v = (argv[0] != 0);
     if (_v) {
@@ -4695,12 +4642,7 @@ SWIGINTERN PyObject *_wrap_new_ciphertext(PyObject *self, PyObject *args) {
       int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_public_key, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        void *vptr = 0;
-        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_parameters, 0);
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_new_ciphertext__SWIG_5(self, args);
-        }
+        return _wrap_new_ciphertext__SWIG_5(self, args);
       }
     }
   }
@@ -4709,11 +4651,11 @@ fail:
   SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_ciphertext'.\n"
     "  Possible C/C++ prototypes are:\n"
     "    ciphertext::ciphertext()\n"
-    "    ciphertext::ciphertext(public_key *,parameters *)\n"
-    "    ciphertext::ciphertext(pari_GEN,public_key *,parameters *)\n"
-    "    ciphertext::ciphertext(int,public_key *,parameters *)\n"
-    "    ciphertext::ciphertext(cipher_text *,public_key *,parameters *)\n"
-    "    ciphertext::ciphertext(PyObject *,public_key *,parameters *)\n");
+    "    ciphertext::ciphertext(public_key *)\n"
+    "    ciphertext::ciphertext(pari_GEN,public_key *)\n"
+    "    ciphertext::ciphertext(int,public_key *)\n"
+    "    ciphertext::ciphertext(cipher_text *,public_key *)\n"
+    "    ciphertext::ciphertext(PyObject *,public_key *)\n");
   return 0;
 }
 
@@ -6780,7 +6722,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_pari_GEN_sub_mat_array(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_pari_GEN_sub_mat_array__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   pari_GEN *arg1 = (pari_GEN *) 0 ;
   int arg2 ;
@@ -6812,11 +6754,145 @@ SWIGINTERN PyObject *_wrap_pari_GEN_sub_mat_array(PyObject *SWIGUNUSEDPARM(self)
     SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "pari_GEN_sub_mat_array" "', argument " "3"" of type '" "int""'");
   } 
   arg3 = static_cast< int >(val3);
-  result = pari_GEN_sub_mat_array(arg1,arg2,arg3);
+  result = pari_GEN_sub_mat_array__SWIG_0(arg1,arg2,arg3);
   resultobj = SWIG_NewPointerObj((new pari_GEN(static_cast< const pari_GEN& >(result))), SWIGTYPE_p_pari_GEN, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
   return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_pari_GEN_sub_mat_array__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  pari_GEN *arg1 = (pari_GEN *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  int arg4 ;
+  int arg5 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  int val4 ;
+  int ecode4 = 0 ;
+  int val5 ;
+  int ecode5 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  pari_GEN result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOO:pari_GEN_sub_mat_array",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_pari_GEN, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "pari_GEN_sub_mat_array" "', argument " "1"" of type '" "pari_GEN *""'"); 
+  }
+  arg1 = reinterpret_cast< pari_GEN * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "pari_GEN_sub_mat_array" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  ecode3 = SWIG_AsVal_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "pari_GEN_sub_mat_array" "', argument " "3"" of type '" "int""'");
+  } 
+  arg3 = static_cast< int >(val3);
+  ecode4 = SWIG_AsVal_int(obj3, &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "pari_GEN_sub_mat_array" "', argument " "4"" of type '" "int""'");
+  } 
+  arg4 = static_cast< int >(val4);
+  ecode5 = SWIG_AsVal_int(obj4, &val5);
+  if (!SWIG_IsOK(ecode5)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "pari_GEN_sub_mat_array" "', argument " "5"" of type '" "int""'");
+  } 
+  arg5 = static_cast< int >(val5);
+  result = pari_GEN_sub_mat_array__SWIG_1(arg1,arg2,arg3,arg4,arg5);
+  resultobj = SWIG_NewPointerObj((new pari_GEN(static_cast< const pari_GEN& >(result))), SWIGTYPE_p_pari_GEN, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_pari_GEN_sub_mat_array(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[6] = {
+    0
+  };
+  Py_ssize_t ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = args ? PyObject_Length(args) : 0;
+  for (ii = 0; (ii < 5) && (ii < argc); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_pari_GEN, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_pari_GEN_sub_mat_array__SWIG_0(self, args);
+        }
+      }
+    }
+  }
+  if (argc == 5) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_pari_GEN, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          {
+            int res = SWIG_AsVal_int(argv[3], NULL);
+            _v = SWIG_CheckState(res);
+          }
+          if (_v) {
+            {
+              int res = SWIG_AsVal_int(argv[4], NULL);
+              _v = SWIG_CheckState(res);
+            }
+            if (_v) {
+              return _wrap_pari_GEN_sub_mat_array__SWIG_1(self, args);
+            }
+          }
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'pari_GEN_sub_mat_array'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    pari_GEN::sub_mat_array(int,int)\n"
+    "    pari_GEN::sub_mat_array(int,int,int,int)\n");
+  return 0;
 }
 
 

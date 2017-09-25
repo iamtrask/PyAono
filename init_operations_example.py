@@ -5,8 +5,8 @@ keysgen = key_gen()
 keys1 = keysgen.generate_key(100, 64, 40, 8, 4, 7)
 message = 11
 print "Plaintext message: " + str(message)
-ct = ciphertext(create_message_matrix(message, 64), keys1.pk, keys1.pk.params)
-ct1 = ciphertext(create_message_matrix(3, 64), keys1.pk, keys1.pk.params)
+ct = ciphertext(create_message_matrix(message, 64), keys1.pk)
+ct1 = ciphertext(create_message_matrix(3, 64), keys1.pk)
 keys2 = keysgen.generate_key(100, 64, 20, 16, 4, 7)
 keys3 = keysgen.generate_key(100, 64, 60, 16, 4, 7)
 ukgen = updation_key_gen()
@@ -26,7 +26,7 @@ print_GEN(get_element(get_element(a.decrypt(keys3.sk), 0), 0))
 uk = ukgen.generate_key(keys1, keys3)
 a = uk.cipher_switch(ct)
 b = uk.cipher_switch(ct1)
-ct = ciphertext(create_message_matrix(4, 64), keys3.pk, keys3.pk.params)
+ct = ciphertext(create_message_matrix(4, 64), keys3.pk)
 print "Multiplying rotated-ciphertext with normal-ciphetext"
 c = a * ct
 print_GEN(get_element(get_element(c.decrypt(keys3.sk), 0), 0))
@@ -43,7 +43,7 @@ print "Adding rotated-ciphertext with normal-ciphetext"
 c = (a + ct)
 print_GEN(get_element(get_element(c.decrypt(keys3.sk), 0), 0))
 print "Plaintext multiplication and adding rotated-ciphertext with normal-ciphetext"
-c = 2 * (a + ct)
+c = (2 * a) + ct
 print_GEN(get_element(get_element(c.decrypt(keys3.sk), 0), 0))
 
 

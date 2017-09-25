@@ -5,7 +5,7 @@ keysgen = key_gen()
 keys1 = keysgen.generate_key(100, 64, 40, 8, 4, 7)
 message = 33
 print "Plaintext message: " + str(message)
-ct = ciphertext(create_message_matrix(message, 64), keys1.pk, keys1.pk.params)
+ct = ciphertext(create_message_matrix(message, 64), keys1.pk)
 
 keys2 = keysgen.generate_key(100, 64, 20, 16, 4, 7)
 keys3 = keysgen.generate_key(100, 64, 60, 16, 4, 7)
