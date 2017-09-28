@@ -7,7 +7,33 @@ This code also has an independent header containing a PARI implementation of the
 
 NOTE : Running the homomorphic multiplication gives a ![equation](http://latex.codecogs.com/gif.latex?%24l*l%24) matrix as opposed to the message being ![equation](http://latex.codecogs.com/gif.latex?%241*l%24). This is because after homomorphic multiplication, we don't get message but we get ![equation](http://latex.codecogs.com/gif.latex?%24m%5ET*m%24).
 
---------
+## Running
+
+1. Install [Docker](https://www.docker.com/)
+
+   * If you're on macOS and use [Homebrew](https://brew.sh), run `brew cask install docker; open -a docker`
+
+2. Run these commands:
+
+``` shell
+make build
+make run
+```
+
+## Development
+
+1. Install [Docker](https://www.docker.com/)
+
+    * If you're on macOS and use [Homebrew](https://brew.sh), run `brew cask install docker; open -a docker`
+   
+2. Run `make build`
+
+3. Edit source code as you wish
+
+4. Run `make dev`
+
+## Notes
+
 ### What's new in the latest version?
 We just rolled out the support for key switching/rotation. Check it out by running `init_key_switching.py`. You can also run `init.py` to check out homomorphic operations working.<br />
 This scheme has an `advantage` over other schemes that the key switching can both, increase as well as decrease the security level of the ciphertext! 
