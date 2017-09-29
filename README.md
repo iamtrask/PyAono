@@ -198,4 +198,5 @@ Arguments: `sk` (`secret_key*`)
 - [x] Add a matrix reading support to testing suite. <br/>
 - [x] Add key switching tests to testing suite. <br/>
 - [x] Update README with pari_GEN. <br/>
+- [ ] Add bootstrapping support. <br/>
 
