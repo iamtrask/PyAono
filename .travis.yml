@@ -19,7 +19,7 @@ install:
 
 # run tests
 script:
-  - make test && pytest --flake8
+  - pytest --flake8
 
 # notifications:
 #     slack: openmined:vOUE1d9jSb6V7R1r6zrjRD4E
