@@ -12,12 +12,15 @@ before_install:
       && make all \
       && make bench \
       && sudo make install \
+      && ls \
       && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD \
+      && echo LD_LIBRARY_PATH \
       && cd .."
 
 # install dependencies
 install:
   - "make compile"
+  - "echo LD_LIBRARY_PATH"
   - "pip install pytest pytest--flake8"
 
 # run tests
