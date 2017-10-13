@@ -14,7 +14,7 @@ before_install:
       && sudo make install \
       && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD \
       && find . -name "libpari-gmp.so.5" \
-      && find . -name "libpari-gmp.so" \
+      && find . -name "libpari-gmp.so" \ 
       && cd .."
 
 # install dependencies
