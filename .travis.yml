@@ -12,6 +12,7 @@ before_install:
       && make all \
       && make bench \
       && sudo make install \
+      && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH: .
       && cd .."
 
 # install dependencies
