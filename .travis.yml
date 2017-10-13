@@ -24,4 +24,4 @@ install:
 
 # run tests
 script:
-  - make test && pytest --flake8
+  - make test
