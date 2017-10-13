@@ -10,6 +10,7 @@ before_install:
       && cd pari-2.9.3 \
       && ./Configure \
       && make all \
+      && make bench \
       && sudo make install \
       && cd .."
 
