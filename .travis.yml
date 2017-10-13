@@ -12,7 +12,7 @@ before_install:
       && make all \
       && make bench \
       && sudo make install \
-      && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/travis/build/mayank0403/PyAono/pari-2.9.3/
+      && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD \
       && cd .."
 
 # install dependencies
