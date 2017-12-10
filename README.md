@@ -1,4 +1,10 @@
 # PyAono [![Build Status](https://travis-ci.org/OpenMined/PyAono.svg?branch=master)](https://travis-ci.org/OpenMined/PyAono)
+
+❗
+This library has been deprecated due to changes in strategy and roadmap. To actively contribute based on our current roadmap, checkout [OpenMined](https://github.com/OpenMined/OpenMined), [PySyft](https://github.com/OpenMined/PySyft), or [join our slack](https://openmined.slack.com/messages/team_pysyft)
+---
+
+
 A Python implementation of the homomorphic encryption scheme by Yoshinori Aono et al. 
 
 This scheme was first introduced in the paper - <a href="https://pdfs.semanticscholar.org/73f0/aa4e1b47b55f0f3d8464f61750e559067c56.pdf">"Fast and Secure Linear Regression and Biometric Authentication with Security Update"</a> by Yoshinori Aono et al. A really unique feature supported by this proposal is the support for key switching. All the code is written in <a href="http://pari.math.u-bordeaux.fr/">PARI library</a> in C++.
